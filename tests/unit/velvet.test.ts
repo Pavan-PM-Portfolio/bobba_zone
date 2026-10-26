@@ -1,14 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { VELVET, VELVET_CATS, VAULT_STAGES, FOLLOW_UPS, PLEASURE_SCALE, ATLAS_SCALE, SHARE_OPTIONS } from '../../src/games/after-dark/content/velvet';
 import { TOPIC_CATS, drawVault, drawVelvet, nextVaultStage, searchAtlas, toggleVelvet, validVelvet, velvetPool, velvetVerdict, velvetVerdictText } from '../../src/games/after-dark/content/velvet/logic';
-import { MODES } from '../../src/games/after-dark/modes';
+import { MODES, modeById } from '../../src/games/after-dark/modes';
+import { GAMES, gameHref } from '../../src/games/registry';
 
 const byCat = (c: string) => VELVET.filter((q) => q.cat === c);
 
 describe('VELVET library', () => {
-  it('is registered and has at least 300 prewritten items', () => {
-    expect(MODES.map((m) => m.id)).toContain('velvet');
-    expect(VELVET.length).toBeGreaterThanOrEqual(300);
+  it('is its own game, outside After Dark, with at least 400 prewritten items', () => {
+    expect(GAMES.map((g) => g.id)).toContain('velvet');
+    expect(gameHref('velvet')).toBe('/velvet');
+    expect(MODES.map((m) => m.id)).not.toContain('velvet');
+    expect(modeById('velvet').id).toBe('velvet');
+    expect(VELVET.length).toBeGreaterThanOrEqual(400);
     for (const c of VELVET_CATS) expect(byCat(c.id).length, c.id).toBeGreaterThanOrEqual(20);
     expect(byCat('atlas').length).toBeGreaterThanOrEqual(80);
   });

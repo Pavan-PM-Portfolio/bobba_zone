@@ -3,6 +3,7 @@ import {
   Compass,
   Feather,
   Flame,
+  Gem,
   Handshake,
   Map,
   MessageCircleQuestion,
@@ -139,10 +140,20 @@ export const GAMES: GameDef[] = [
     icon: Flame,
     tint: { bg: '#F6DCE5', fg: '#8E2B52' },
   },
+  {
+    id: 'velvet',
+    title: 'VELVET: Body & Desire',
+    tagline: 'Tap, choose, reveal together. 18+.',
+    description: 'Over 400 sensual questions: body map, turn-ons, fantasies, kinks and secret curiosities. Tap-only, private picks stay private.',
+    format: 'Simultaneous',
+    duration: '20-90 min',
+    icon: Gem,
+    tint: { bg: '#F3DDE6', fg: '#7E2049' },
+  },
 ];
 
 /** Where a game card leads. */
-export const gameHref = (id: string) => (id === 'likely' ? '/create' : id === 'after_dark' ? '/after-dark' : `/new/${id}`);
+export const gameHref = (id: string) => (id === 'likely' ? '/create' : id === 'after_dark' ? '/after-dark' : id === 'velvet' ? '/velvet' : `/new/${id}`);
 
 export const gameById = (id: string): GameDef | undefined => GAMES.find((g) => g.id === id);
 

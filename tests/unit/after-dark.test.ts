@@ -14,7 +14,7 @@ const all = [...TRUTHS, ...DARES, ...DESIRES, ...PICKS.map((p) => ({ ...p, text:
 
 describe('After Dark content library', () => {
   it('has substantial original content for every mode', () => {
-    expect(MODES).toHaveLength(11);
+    expect(MODES).toHaveLength(10);
     expect(TRUTHS.length).toBeGreaterThanOrEqual(48);
     expect(DARES.length).toBeGreaterThanOrEqual(40);
     expect(PICKS.length).toBeGreaterThanOrEqual(40);

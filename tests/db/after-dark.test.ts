@@ -138,3 +138,26 @@ describe('VELVET: Atlas reveal permissions', () => {
     expect(JSON.stringify(await view(b, id))).toContain('"discuss"');
   });
 });
+
+describe('VELVET: its own game', () => {
+  it('can be created as a separate game and uses the same private boundaries', async () => {
+    const a = await db.newUser();
+    const b = await db.newUser();
+    const c = await db.rpc(a, 'create_session', { p_game: 'velvet', p_display_name: 'Pavan', p_settings: JSON.stringify({ mode: 'velvet', style: 'roulette' }), p_title: 'Desire Roulette' });
+    await db.rpc(b, 'join_any', { p_invite_code: c.invite_code, p_display_name: 'Partner' });
+    const id = c.session_id as string;
+    await db.rpc(a, 'set_session_ready', { p_session_id: id, p_ready: true });
+    await db.rpc(b, 'set_session_ready', { p_session_id: id, p_ready: true });
+    await db.rpc(a, 'start_session', { p_session_id: id });
+    expect((await view(a, id)).session.game).toBe('velvet');
+    await submit(a, id, 'priv:setup', { adult: true, consent: true, level: 5, include: ['body', 'atlas', 'secret'], type: 'questions' });
+    await submit(b, id, 'priv:setup', { adult: true, consent: true, level: 5, include: ['atlas', 'talk'], type: 'questions' });
+    expect((await terms(a, id)).categories).toEqual(['atlas']);
+    expect(JSON.stringify(await view(b, id))).not.toContain('secret');
+  });
+
+  it('still refuses unknown games', async () => {
+    const a = await db.newUser();
+    await expectError(db.rpc(a, 'create_session', { p_game: 'nope', p_display_name: 'X', p_settings: '{}' }), 'invalid_game');
+  });
+});

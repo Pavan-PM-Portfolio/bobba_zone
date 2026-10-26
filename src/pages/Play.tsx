@@ -25,6 +25,7 @@ const MODULES: Record<SessionGame, ComponentType<GameProps>> = {
   mystery: lazy(() => import('../games/mystery/Mystery')),
   story: lazy(() => import('../games/story/Story')),
   after_dark: lazy(() => import('../games/after-dark/AfterDark')),
+  velvet: lazy(() => import('../games/after-dark/AfterDark')),
 };
 
 export function Ended({ title, body }: { title: string; body: string }) {

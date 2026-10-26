@@ -120,7 +120,8 @@ export type GameId =
   | 'quest'
   | 'mystery'
   | 'story'
-  | 'after_dark';
+  | 'after_dark'
+  | 'velvet';
 
 export type SessionGame = Exclude<GameId, 'likely'>;
 export type SessionStatus = 'waiting' | 'in_progress' | 'completed' | 'cancelled' | 'expired';

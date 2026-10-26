@@ -33,7 +33,7 @@ const MODE_COMPONENTS: Record<ModeId, ComponentType<ModeProps>> = {
 
 export default function AfterDark({ view, s }: GameProps) {
   const { terms, reload } = useTerms(view);
-  const mode = modeById(String(view.session.settings.mode ?? 'truth_dare'));
+  const mode = modeById(view.session.game === 'velvet' ? 'velvet' : String(view.session.settings.mode ?? 'truth_dare'));
   const started = view.session.state.phase === 'play';
   const completed = view.session.status === 'completed';
   const [prefsOpen, setPrefsOpen] = useState(false);
@@ -80,7 +80,7 @@ export default function AfterDark({ view, s }: GameProps) {
             <Button size="sm" variant="ghost" icon={<SlidersHorizontal className="size-4" />} onClick={() => setPrefsOpen(true)}>
               Boundaries
             </Button>
-            <Link to="/after-dark" className="inline-flex h-9 items-center gap-1.5 rounded-[6px] px-3 text-sm font-semibold text-ink-soft hover:bg-mist hover:text-ink">
+            <Link to={velvet ? '/velvet' : '/after-dark'} className="inline-flex h-9 items-center gap-1.5 rounded-[6px] px-3 text-sm font-semibold text-ink-soft hover:bg-mist hover:text-ink">
               <Pause className="size-4" aria-hidden="true" /> Pause
             </Link>
             <Button size="sm" variant="ghost" icon={<Square className="size-3.5" />} onClick={() => setStopOpen(true)}>

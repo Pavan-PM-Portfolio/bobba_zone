@@ -4,7 +4,6 @@ export type ModeId = 'velvet' | 'mcq' | 'desire' | 'truth_dare' | 'pick_one' | '
 
 export const MODES: { id: ModeId; title: string; description: string; format: string; icon: LucideIcon }[] = [
   { id: 'mcq', title: 'The Question Game', description: 'Scenarios and deep questions with four answers each. Choose in private, lock in, reveal together.', format: 'Simultaneous', icon: ListChecks },
-  { id: 'velvet', title: 'VELVET: Body & Desire', description: 'Tap-only adult preference game: body map, arousal, fantasies, kinks and secret curiosities, revealed together.', format: 'Simultaneous', icon: Gem },
   { id: 'desire', title: 'Desire Mode', description: 'Turn-ons, touch, kinks, fantasies and secret curiosities. Private answers, revealed together, only on topics you both opt into.', format: 'Simultaneous', icon: Flame },
   { id: 'truth_dare', title: 'Truth or Dare', description: 'Take turns choosing. Every few rounds you both answer the same truth.', format: 'Take turns', icon: Spade },
   { id: 'pick_one', title: 'Pick One', description: 'Two options, chosen in private, revealed together.', format: 'Simultaneous', icon: GitCompareArrows },
@@ -16,4 +15,7 @@ export const MODES: { id: ModeId; title: string; description: string; format: st
   { id: 'wild', title: 'Wildcards', description: 'A big deck of questions, choices, scenarios and challenges. Draw, skip, reshuffle.', format: 'Together', icon: Layers },
 ];
 
-export const modeById = (id: string) => MODES.find((m) => m.id === id) ?? MODES[0]!;
+/** VELVET is its own game, rendered by the same shell. */
+export const VELVET_MODE = { id: 'velvet' as ModeId, title: 'VELVET: Body & Desire', description: 'Tap-only adult preference game.', format: 'Simultaneous', icon: Gem };
+
+export const modeById = (id: string) => (id === 'velvet' ? VELVET_MODE : (MODES.find((m) => m.id === id) ?? MODES[0]!));

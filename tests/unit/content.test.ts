@@ -14,7 +14,7 @@ const unique = (xs: string[]) => new Set(xs).size === xs.length;
 
 describe('game catalogue', () => {
   it('has eleven distinct games', () => {
-    expect(GAMES).toHaveLength(11);
+    expect(GAMES).toHaveLength(12);
     expect(unique(GAMES.map((g) => g.id))).toBe(true);
   });
 });

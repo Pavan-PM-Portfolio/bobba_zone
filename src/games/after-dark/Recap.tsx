@@ -23,8 +23,10 @@ export function Recap({
   momentTitle: string;
   momentBody?: string;
 }) {
+  const velvet = view.session.game === 'velvet';
   const idx = MODES.findIndex((m) => m.id === mode);
   const next = MODES[(idx + 1) % MODES.length]!;
+  const home = velvet ? '/velvet' : '/after-dark';
   return (
     <div className="space-y-10">
       <div>
@@ -42,14 +44,14 @@ export function Recap({
       {children}
       <div className="flex flex-col gap-4 rounded-[12px] bg-shell p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm text-ink-soft">Try next</p>
-          <p className="font-semibold">{next.title}</p>
-          <p className="text-sm text-ink-soft">{next.description}</p>
+          <p className="text-sm text-ink-soft">{velvet ? 'Play again' : 'Try next'}</p>
+          <p className="font-semibold">{velvet ? 'Desire Roulette, the Velvet Vault or the Atlas' : next.title}</p>
+          <p className="text-sm text-ink-soft">{velvet ? 'Every way to play keeps track of what you have already answered.' : next.description}</p>
         </div>
         <div className="flex shrink-0 gap-2">
-          <SaveMoment game="after_dark" sessionId={view.session.id} defaultTitle={momentTitle} defaultBody={momentBody} />
-          <Link to="/after-dark" className={buttonClass('primary', 'sm')}>
-            Back to After Dark
+          <SaveMoment game={view.session.game} sessionId={view.session.id} defaultTitle={momentTitle} defaultBody={momentBody} />
+          <Link to={home} className={buttonClass('primary', 'sm')}>
+            {velvet ? 'Back to VELVET' : 'Back to After Dark'}
           </Link>
         </div>
       </div>

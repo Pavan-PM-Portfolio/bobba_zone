@@ -11,6 +11,7 @@ const Login = lazy(() => import('./pages/Login'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const NewGame = lazy(() => import('./pages/NewGame'));
 const AfterDarkHome = lazy(() => import('./pages/AfterDarkHome'));
+const VelvetHome = lazy(() => import('./pages/VelvetHome'));
 const Play = lazy(() => import('./pages/Play'));
 const CreateGame = lazy(() => import('./pages/CreateGame'));
 const JoinGame = lazy(() => import('./pages/JoinGame'));
@@ -69,6 +70,7 @@ const router = createHashRouter([
   { path: '/new/:game', element: <Authed><NewGame /></Authed> },
   { path: '/play/:sessionId', element: <Authed><Play /></Authed> },
   { path: '/after-dark', element: <Authed><AfterDarkHome /></Authed> },
+  { path: '/velvet', element: <Authed><VelvetHome /></Authed> },
   { path: '/login', element: <Authed><SignedInRedirect /></Authed> },
   { path: '/create', element: <Authed><CreateGame /></Authed> },
   { path: '/join', element: <Authed><JoinGame /></Authed> },

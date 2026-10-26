@@ -14,7 +14,7 @@ A private app of ten real-time games for two partners, each played on your own p
 | 8 | Romance Quest | Challenge journey filtered by budget and time |
 | 9 | The Couple's Mystery | Private clue cards (server-held), shared board, validated answers |
 | 10 | Story Roulette for Two | Turn-based choices, typeset story |
-| 11 | After Dark (18+) | VELVET: Body & Desire (305 tap-only questions, Desire Roulette, Velvet Vault, Kink Atlas), Desire Mode (243 private preference questions, Intensity Ladder, secret-answer controls), The Question Game (scenario MCQs, 5 levels, 7 decks, 290 questions) plus eight more modes: Truth or Dare, Pick One, Secret Desires, Heat Ladder, Dare Roulette, Who Knows Whom Better, Fantasy Date Builder, Wildcards |
+| 11 | After Dark (18+) | Desire Mode (243 private preference questions, Intensity Ladder, secret-answer controls), The Question Game (scenario MCQs, 5 levels, 7 decks, 290 questions) plus eight more modes: Truth or Dare, Pick One, Secret Desires, Heat Ladder, Dare Roulette, Who Knows Whom Better, Fantasy Date Builder, Wildcards |
 
 - **Frontend:** React 19 + TypeScript (strict) + Vite + Tailwind CSS v4 + Lucide icons
 - **Backend:** Supabase - Postgres, email/password Auth (admin-created accounts), Realtime private channels, RLS
@@ -37,11 +37,11 @@ Each player's adult confirmation, consent, intensity, categories and content typ
 
 Answers are `seal:q<i>` entries (`{id, picks, note}`), so the server keeps both hidden until both exist. The question for each step is drawn once into shared state (`qs`), so both devices always see the same question. The level starts at 1 and only rises when both players add a `pub:up<level>` entry; it can never exceed the agreed boundaries, and either player can step down. A skip moves both players on and reveals nothing. Follow-ups are chosen from the option a player picked, never inferred.
 
-### VELVET: Body & Desire (After Dark)
+### VELVET: Body & Desire (its own game, 18+)
 
-305 prewritten, tap-only items in `src/games/after-dark/content/velvet/`: Body Map, Arousal & Stimulation, Pleasure Preferences (Interested / Curious / Unsure / Not interested / Keep private), Fantasy Theatre, Kink & Fetish Atlas (50 searchable cards: Definitely interested / Curious / Only after discussion / Not interested / Keep private), Intimate Communication, Secret Curiosities, Preference Predictions and Velvet Vault key questions. Every item has a predefined follow-up MCQ; there is no free text.
+402 prewritten, tap-only items in `src/games/after-dark/content/velvet/`: Body Map, Arousal & Stimulation, Pleasure Preferences (Interested / Curious / Unsure / Not interested / Keep private), Fantasy Theatre, Kink & Fetish Atlas (82 searchable cards: Definitely interested / Curious / Only after discussion / Not interested / Keep private), Intimate Communication, Secret Curiosities, Preference Predictions and Velvet Vault key questions. Every item has a predefined follow-up MCQ; there is no free text.
 
-Four ways to play: by category (or one category), Desire Roulette (a wheel over the categories both chose; the spin is written once to shared state so both devices land the same way), the Velvet Vault (five stages, each opted into separately via `pub:vs<n>`), and the Atlas browser. Answers use the same disclosure scheme as Desire Mode: `seal:x<k>` for reveal-together, plus `pub:xs<k>` for reveal-now, or `priv:x<k>` for private, with a `pub:xd<k>` marker that carries only the sharing choice.
+VELVET is game type `velvet` (migration 10) with its own home page at `/velvet`. It reuses the session engine and `after_dark_terms()` for private category opt-in. Four ways to play: by category (or one category), Desire Roulette (a wheel over the categories both chose; the spin is written once to shared state so both devices land the same way), the Velvet Vault (five stages, each opted into separately via `pub:vs<n>`), and the Atlas browser. Answers use the same disclosure scheme as Desire Mode: `seal:x<k>` for reveal-together, plus `pub:xs<k>` for reveal-now, or `priv:x<k>` for private, with a `pub:xd<k>` marker that carries only the sharing choice.
 
 ### Desire Mode (After Dark)
 
