@@ -8,8 +8,7 @@ import type { PlayerNumber, SessionView } from '../../../lib/types';
 import { useBusy, useDraft, useJustRevealed } from '../../flow';
 import type { SessionApi } from '../../types';
 import type { ModeProps } from '../AfterDark';
-import { VELVET } from '../content/velvet';
-import { ATLAS_GROUPS } from '../content/velvet/atlas';
+import { ATLAS_GROUPS, VELVET } from '../content/velvet';
 import { FOLLOW_UPS, SHARE_OPTIONS, VAULT_STAGES, VELVET_CATS, type VCat, type VItem } from '../content/velvet/types';
 import {
   TOPIC_CATS,

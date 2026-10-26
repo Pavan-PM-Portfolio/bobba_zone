@@ -146,7 +146,7 @@ export default function AfterDarkHome() {
           </p>
           <h2 id="velvet" className="reading mt-2 text-[2rem] leading-tight font-semibold tracking-[-0.02em]">Tap, choose, reveal together.</h2>
           <p className="mt-2 max-w-[36rem] leading-relaxed text-ink-soft">
-            Over 300 sensual, prewritten questions: your body map, what turns you on, fantasies, kinks and secret curiosities. Nothing to type. Private picks stay private.
+            Over 400 sensual, prewritten questions: your body map, what turns you on, fantasies, kinks and secret curiosities. Nothing to type. Private picks stay private.
           </p>
         </div>
         <div className="grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
@@ -155,7 +155,7 @@ export default function AfterDarkHome() {
               { id: 'categories', icon: Layers, title: 'Play by category', detail: 'A mix from every category you both chose.' },
               { id: 'roulette', icon: Disc3, title: 'Desire Roulette', detail: 'Spin the wheel. It decides the category.' },
               { id: 'vault', icon: VaultIcon, title: 'The Velvet Vault', detail: 'Five stages. You both opt in to each.' },
-              { id: 'atlas', icon: LibraryBig, title: 'Kink & Fetish Atlas', detail: 'Search 50 cards and answer any you like.' },
+              { id: 'atlas', icon: LibraryBig, title: 'Kink & Fetish Atlas', detail: 'Search 80+ cards and answer any you like.' },
             ] as const
           ).map((o) => (
             <button

@@ -10,7 +10,7 @@ describe('VELVET library', () => {
     expect(MODES.map((m) => m.id)).toContain('velvet');
     expect(VELVET.length).toBeGreaterThanOrEqual(300);
     for (const c of VELVET_CATS) expect(byCat(c.id).length, c.id).toBeGreaterThanOrEqual(20);
-    expect(byCat('atlas')).toHaveLength(50);
+    expect(byCat('atlas').length).toBeGreaterThanOrEqual(80);
   });
 
   it('has unique ids and texts, and ids that fit entry keys', () => {
@@ -40,7 +40,7 @@ describe('VELVET library', () => {
   it('keeps hard lines: nothing non-consensual, underage, recorded or involving others', () => {
     for (const q of VELVET) {
       const all = [q.text, q.setup ?? '', q.them ?? '', ...q.options.map((o) => o.text)].join(' ');
-      expect(all, q.id).not.toMatch(/student|teacher|school|teen|minor|young girl|young boy|non-?consensual|against (their|your) will|drunk|asleep and|photo(?!-free)|video|record|camera(?! at all)|threesome|choke|chok/i);
+      expect(all, q.id).not.toMatch(/student|teacher|school|teen|minor|young girl|young boy|non-?consensual|against (their|your) will|drunk|asleep|photo(?!-free)|video|record|camera(?! at all)|threesome|choke|chok/i);
     }
   });
 });

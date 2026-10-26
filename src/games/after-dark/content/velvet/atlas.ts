@@ -77,4 +77,3 @@ export const ATLAS = [
   atlas('ka-coin', 'Leading & switching', 'Leave it to chance', 'A coin toss decides who is in charge.', ['chance', 'game', 'switch'], 4),
 ];
 
-export const ATLAS_GROUPS = [...new Set(ATLAS.map((a) => a.group!))];
