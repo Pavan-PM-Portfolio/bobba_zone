@@ -87,3 +87,40 @@ describe('After Dark: agreed terms', () => {
     await expectError(terms(x, s.session_id), 'invalid_input');
   });
 });
+
+describe('Desire Mode: disclosure choices', () => {
+  it('a secret kept private is never readable by the partner, and blocks a "reveal together" answer', async () => {
+    const { a, b, id } = await pair();
+    // A: reveal after both answer. B: keep private.
+    await submit(a, id, 'seal:x4', { id: 'd-sc-try', picks: ['b'], note: 'a-secret-note' });
+    await submit(a, id, 'pub:xd4', { share: 'together' });
+    await submit(b, id, 'priv:x4', { id: 'd-sc-try', picks: ['c'], note: 'b-private-note' });
+    await submit(b, id, 'pub:xd4', { share: 'private' });
+    const va = JSON.stringify(await view(a, id));
+    const vb = JSON.stringify(await view(b, id));
+    expect(va).not.toContain('b-private-note');
+    expect(vb).not.toContain('a-secret-note');
+    // the partner only learns the share choice, which is what the marker is for
+    expect(vb).toContain('"share":"together"');
+    expect(va).toContain('"share":"private"');
+  });
+
+  it('answers marked "reveal together" appear for both only once both exist', async () => {
+    const { a, b, id } = await pair();
+    await submit(a, id, 'seal:x5', { id: 'd-k-blindfold', picks: ['curious'] });
+    expect(JSON.stringify(await view(b, id))).not.toContain('curious');
+    await submit(b, id, 'seal:x5', { id: 'd-k-blindfold', picks: ['yes'] });
+    expect(JSON.stringify(await view(b, id))).toContain('curious');
+    expect(JSON.stringify(await view(a, id))).toContain('"yes"');
+    // sealed answers cannot be changed after the fact
+    await expectError(submit(a, id, 'seal:x5', { id: 'd-k-blindfold', picks: ['no'] }), 'already_submitted');
+  });
+
+  it('desire categories are intersected privately like any other boundary', async () => {
+    const { a, b, id } = await pair();
+    await submit(a, id, 'priv:setup', { adult: true, consent: true, level: 5, include: ['turnons', 'kink', 'secret'], type: 'questions' });
+    await submit(b, id, 'priv:setup', { adult: true, consent: true, level: 5, include: ['kink', 'fantasy'], type: 'questions' });
+    expect((await terms(a, id)).categories).toEqual(['kink']);
+    expect(JSON.stringify(await view(b, id))).not.toContain('turnons');
+  });
+});

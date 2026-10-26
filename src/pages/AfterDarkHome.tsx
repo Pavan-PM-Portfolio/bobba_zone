@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, ChevronLeft, ListChecks, LockKeyhole, Star, Trash2 } from 'lucide-react';
+import { Check, ChevronLeft, Flame, ListChecks, LockKeyhole, Star, Trash2 } from 'lucide-react';
 import { Shell } from '../components/ui/Shell';
 import { Button } from '../components/ui/Button';
 import { Dialog } from '../components/ui/Dialog';
@@ -27,6 +27,8 @@ export default function AfterDarkHome() {
   const [starting, setStarting] = useState<string | null>(null);
   const [decks, setDecks] = useState<Deck[]>(DECKS.map((d) => d.id));
   const [rounds, setRounds] = useState(12);
+  const [desireStyle, setDesireStyle] = useState<'mixed' | 'ladder'>('ladder');
+  const [desireRounds, setDesireRounds] = useState(15);
   const [removing, setRemoving] = useState<Moment | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -200,10 +202,69 @@ export default function AfterDarkHome() {
         </div>
       </section>
 
+      <section className="mt-6 rounded-[14px] bg-shell p-6 sm:p-7" aria-labelledby="desire">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-[32rem]">
+            <span className="grid size-10 place-items-center rounded-[8px] bg-white text-accent-deep" aria-hidden="true">
+              <Flame className="size-5" strokeWidth={1.8} />
+            </span>
+            <h2 id="desire" className="mt-4 text-[1.35rem] font-semibold tracking-[-0.02em]">Desire Mode</h2>
+            <p className="mt-1.5 leading-relaxed text-ink-soft">
+              Turn-ons, kissing and touch, kinks, fantasies and secret curiosities. Each of you privately opts into topics, answers on your own device, and sees the other's answer only at the reveal. Secret answers stay private unless you choose to share them.
+            </p>
+            <p className="mt-3 text-sm text-ink-mute">For two consenting adults. Interest is never agreement.</p>
+          </div>
+          <div className="space-y-4 lg:w-[26rem]">
+            <div role="radiogroup" aria-label="How to play" className="grid gap-2">
+              {(
+                [
+                  { id: 'ladder', title: 'The Intensity Ladder', detail: 'Five steps, each more personal. You both opt in before every step.' },
+                  { id: 'mixed', title: 'Mixed session', detail: 'Questions drawn from every topic you both chose.' },
+                ] as const
+              ).map((o) => (
+                <button
+                  key={o.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={desireStyle === o.id}
+                  onClick={() => setDesireStyle(o.id)}
+                  className={`rounded-[8px] px-4 py-3 text-left ${desireStyle === o.id ? 'bg-white shadow-[0_0_0_2px_var(--color-accent)]' : 'bg-white/70 shadow-hairline hover:bg-white'}`}
+                >
+                  <span className={`block text-sm font-semibold ${desireStyle === o.id ? 'text-accent-deep' : ''}`}>{o.title}</span>
+                  <span className="block text-xs text-ink-mute">{o.detail}</span>
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                size="lg"
+                loading={starting === 'desire'}
+                disabled={starting !== null}
+                onClick={() => start('desire', desireStyle === 'ladder' ? { style: 'ladder', perStage: 4 } : { style: 'mixed', rounds: desireRounds })}
+              >
+                Start Desire Mode
+              </Button>
+              {desireStyle === 'mixed' && (
+                <label className="flex items-center gap-2 text-sm text-ink-soft">
+                  Questions
+                  <select value={desireRounds} onChange={(e) => setDesireRounds(Number(e.target.value))} className="h-9 rounded-[6px] bg-white px-2 text-ink shadow-[0_0_0_1px_var(--color-line-strong)]">
+                    {[10, 15, 25, 40].map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="mt-10" aria-labelledby="modes">
         <h2 id="modes" className="text-[1.05rem] font-semibold">More ways to play</h2>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {MODES.filter((m) => m.id !== 'mcq').map((m) => (
+          {MODES.filter((m) => m.id !== 'mcq' && m.id !== 'desire').map((m) => (
             <li key={m.id}>
               <button
                 type="button"

@@ -477,7 +477,7 @@ function Reveal({ view, s, q, i, total, pair, animate }: { view: SessionView; s:
 
       <div className="flex flex-wrap gap-2">
         <Button size="sm" variant="secondary" icon={<MessageCircleMore className="size-4" />} onClick={() => setMore((x) => !x)} aria-expanded={more}>
-          Tell me more <ChevronDown className={`size-3.5 transition-transform ${more ? 'rotate-180' : ''}`} aria-hidden="true" />
+          <span className="inline-flex items-center gap-1 whitespace-nowrap">Tell me more <ChevronDown className={`size-3.5 transition-transform ${more ? 'rotate-180' : ''}`} aria-hidden="true" /></span>
         </Button>
         <Button
           size="sm"

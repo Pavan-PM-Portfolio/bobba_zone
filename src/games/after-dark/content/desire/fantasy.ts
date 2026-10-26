@@ -1,0 +1,173 @@
+import { choice } from './types';
+
+/** D. Fantasy Scenarios: original scenes, each with four distinct directions. */
+export const FANTASIES = [
+  choice('fantasy', 'fs-explore', 'Which kind of scenario interests you most?', [
+    'A character-based roleplay with a playful story and distinct personas.',
+    'A scenario built around teasing, anticipation and gradually revealing what each person wants.',
+    'A scenario with consensual roles where each person explicitly agrees on the dynamic beforehand.',
+    'A spontaneous-feeling scenario where the plan is discussed in advance but the details stay a surprise.',
+  ], 'What part of your chosen scenario appeals to you most?', { setup: 'You and your partner have agreed to explore a playful fantasy together. You both have time to discuss what sounds exciting and establish your boundaries first.' }),
+  choice('fantasy', 'fs-hotel-bar', 'How do you want the night to unfold?', [
+    'I play hard to get and make them work for it.',
+    'I make the first move, confidently.',
+    'We barely speak and leave together almost immediately.',
+    'We flirt for hours before anyone suggests leaving.',
+  ], 'What name would you use?', { setup: 'A hotel bar in a city where nobody knows you. You have agreed to arrive separately and act as strangers. Your partner sits two seats away and orders a drink.' }),
+  choice('fantasy', 'fs-masquerade', 'What happens behind the masks?', [
+    'We never reveal who we are, even to each other, all night.',
+    'I find them in a quiet corridor and pull them aside.',
+    'A note leads me to a room upstairs.',
+    'We dance until the tension is unbearable, then leave.',
+  ], 'What would your mask look like?', { setup: 'A masquerade ball in an old mansion. Velvet masks, low music, candlelit corridors. You know your partner is here somewhere, dressed in something you have never seen.' }),
+  choice('fantasy', 'fs-villa', 'What do you want from the night?', [
+    'Slow and unhurried, all night long.',
+    'Something we have never done before, agreed beforehand.',
+    'A game with rules we invent together.',
+    'A night where I am completely looked after.',
+  ], 'What would you add to the setting?', { setup: 'A private villa above the sea. The pool is lit from below, the air is warm and there is nobody for miles. You have the whole night.' }),
+  choice('fantasy', 'fs-train', 'Which direction appeals most?', [
+    'Strangers sharing a cabin, slowly drawn together.',
+    'An affair-style story between two characters, played as fiction.',
+    'Just us, but with the thrill of being somewhere unfamiliar.',
+    'A slow, lazy journey with no need to sleep.',
+  ], 'Where would the train be going?', { setup: 'An overnight sleeper train through the mountains. A small private cabin, the rhythm of the tracks, rain on the window, and hours ahead.' }),
+  choice('fantasy', 'fs-snowed-in', 'How do you spend the evening?', [
+    'In front of the fire with nothing to rush.',
+    'With a game that slowly gets bolder.',
+    'Taking turns choosing what happens next.',
+    'Telling each other a fantasy we have never said aloud.',
+  ], 'What would you want to say aloud?', { setup: 'A mountain cabin, snowed in for three days. A fire, a bottle of something good, no signal and nowhere to be.' }),
+  choice('fantasy', 'fs-instructions', 'How should the evening begin?', [
+    'Being blindfolded and led to the next room.',
+    'A long bath, with my partner in charge of everything.',
+    'A list of instructions I follow one by one.',
+    'A slow undressing, one item per card.',
+  ], 'What would your cards say for them?', { setup: 'You come home to candles and a note: "Follow the cards. You can stop at any point." The first card asks you to choose how the evening begins.' }),
+  choice('fantasy', 'fs-muse', 'Which version sounds most appealing?', [
+    'A playful "artist and muse" roleplay, sketching each other slowly.',
+    'A private fashion show where I keep changing outfits for my partner.',
+    'Being described out loud, in detail, by my partner.',
+    'Just being looked at, slowly, without words.',
+  ], 'What makes being admired appealing, or not?', { setup: 'A sunlit studio with soft light and white sheets. You agree to an afternoon scene about being seen and admired, just between the two of you.' }),
+  choice('fantasy', 'fs-power', 'Which dynamic would you choose for the night?', [
+    'I am in charge from start to finish.',
+    'My partner is in charge from start to finish.',
+    'We switch at midnight.',
+    'Neither. Equal, but bolder than usual.',
+  ], 'What would you each agree to before starting?', { setup: 'You have agreed to try a night with a clear dynamic. Before anything starts, you both sit down and set the limits and a word that stops everything.' }),
+  choice('fantasy', 'fs-reunion', 'What happens when you see them?', [
+    'I run and do not let go.',
+    'We barely make it inside.',
+    'We go slowly, savouring every moment.',
+    'We make each other wait just a little longer.',
+  ], 'How long would the wait need to be?', { setup: 'You have been apart for two weeks. Your partner is waiting at the arrivals gate. They have booked a hotel nearby and told you nothing else.' }),
+  choice('fantasy', 'fs-office', 'Which story appeals?', [
+    'Colleagues finally giving in to a long tension.',
+    'A boss and an assistant, played clearly as fiction.',
+    'A business trip where we "accidentally" share a room.',
+    'None of these. I would invent another.',
+  ], 'What would you invent instead?', { setup: 'A roleplay set after hours in a glass office high above the city. It is pure fiction, with everything agreed beforehand.' }),
+  choice('fantasy', 'fs-spa', 'Which experience would you choose?', [
+    'A slow massage that becomes something more.',
+    'A steam room, a cold plunge, then warmth.',
+    'A private bath for two.',
+    'Taking turns pampering each other.',
+  ], 'What detail would make it perfect?', { setup: 'A private spa suite booked just for you two. Warm stone, low light, scented oils and nobody to interrupt.' }),
+  choice('fantasy', 'fs-tease-day', 'How does the day play out?', [
+    'Messages getting bolder hour by hour.',
+    'Small touches every time we pass, nothing more.',
+    'A single message at noon promising everything.',
+    'Silence all day, then a surprise.',
+  ], 'Would you do this for your partner?', { setup: 'You agree on a "tease day": affection is allowed but nothing more until 9pm. The game starts at breakfast.' }),
+  choice('fantasy', 'fs-roles-reversed', 'What would you change for one night?', [
+    'Who initiates.',
+    'Who decides the pace.',
+    'Who is in charge.',
+    'Who is the one being looked after.',
+  ], 'What do you think you would learn?', { setup: 'For one night, you agree to swap your usual roles completely. Whatever each of you normally does, the other does instead.' }),
+  choice('fantasy', 'fs-secret-room', 'Who goes in first, and how?', [
+    'I do, and I set the scene.',
+    'My partner does, and I follow.',
+    'We go in together.',
+    'We keep the key and imagine it instead.',
+  ], 'What is behind the door?', { setup: 'An old hotel with a famous locked room. Couples are said to leave with a secret. The concierge hands your partner the key, and they hand it to you.' }),
+  choice('fantasy', 'fs-storm', 'What happens by candlelight?', [
+    'We take our time, with only the storm for sound.',
+    'A game of truths, each one bolder.',
+    'Slow dancing in the dark that goes further.',
+    'A massage with the last of the warm oil.',
+  ], 'What would make it unforgettable?', { setup: 'A storm knocks out the power. Candles everywhere, rain hammering the windows, no screens and no reason to leave the bedroom.' }),
+  choice('fantasy', 'fs-new-identity', 'Who would you be?', [
+    'Someone far more daring than me.',
+    'Someone mysterious who reveals very little.',
+    'Someone playful and outrageous.',
+    'Myself, but without any self-consciousness.',
+  ], 'Describe them.', { setup: 'For one evening you can be anyone you like, and your partner promises to play along.' }),
+  choice('fantasy', 'fs-lake', 'Which way does the night go?', [
+    'Slow swimming, then warm towels and closeness.',
+    'Chasing each other, laughing.',
+    'Lying on the jetty under the stars.',
+    'Back to the cabin, quickly.',
+  ], 'Where in the world would this be?', { setup: 'A secluded lake on a warm summer night. Fireflies, still water, nobody for miles. Your partner steps in and turns back to you.' }),
+  choice('fantasy', 'fs-countdown', 'What would you want the countdown to build to?', [
+    'A carefully planned night I know nothing about.',
+    'Trying something we both chose from a list.',
+    'Finally saying a fantasy out loud.',
+    'A night in a beautiful place.',
+  ], 'What would you put on the list?', { setup: 'You agree on a date one week away. Every day until then, you each send one hint about what you are hoping for.' }),
+  choice('fantasy', 'fs-dinner-under', 'How do you play it?', [
+    'Keep a perfectly straight face and tease back.',
+    'Lean in and whisper something bold.',
+    'Ask for the bill immediately.',
+    'Make them wait until dessert.',
+  ], 'Would you enjoy this, or prefer it at home?', { setup: 'An elegant restaurant. Halfway through dinner, your partner slides a note across the table describing what they want to happen when you get home.' }),
+  choice('fantasy', 'fs-rooftop', 'What happens next?', [
+    'A slow kiss with the city below.',
+    'We sneak back to the room.',
+    'We stay up there until sunrise.',
+    'We make a dare and see who breaks first.',
+  ], 'What would the dare be?', { setup: 'The private rooftop terrace of your hotel at midnight. City lights, warm air, and nobody else allowed up.' }),
+  choice('fantasy', 'fs-slow-night', 'Which rule would you set?', [
+    'No rushing, under any circumstances.',
+    'Only one of us may touch at a time.',
+    'Everything must be asked for, out loud.',
+    'Eyes closed for one of us, the whole time.',
+  ], 'Who would set the rule?', { setup: 'You agree that tonight has one rule, and you each get to propose it.' }),
+  choice('fantasy', 'fs-wedding-guest', 'What is your move?', [
+    'Pretend we have only just met.',
+    'Sneak away for ten minutes.',
+    'Dance far too close.',
+    'Wait, and make the whole evening a build-up.',
+  ], 'How long could you wait?', { setup: 'A friend\'s wedding. Your partner looks incredible. The reception has hours to go, and you cannot stop looking at each other.' }),
+  choice('fantasy', 'fs-artist', 'How would it go?', [
+    'Slow, intentional painting, then a shower together.',
+    'Mostly laughter, then something more.',
+    'A canvas we keep, without showing anyone.',
+    'I would rather watch than take part.',
+  ], 'Would you try something like this?', { setup: 'A body-paint evening at home: a sheet on the floor, washable paints, music, and no plan beyond making a beautiful mess together.' }),
+  choice('fantasy', 'fs-choose-door', 'Which door would you choose?', [
+    'Door one: candles, silk and slow music.',
+    'Door two: a costume and a character waiting for you.',
+    'Door three: a blindfold and a list of agreed limits.',
+    'Door four: your partner, and a question: "What do you want?"',
+  ], 'What would be behind your door for them?', { setup: 'Four doors, four different evenings, each agreed in advance. You get to choose just one.' }),
+  choice('fantasy', 'fs-morning', 'How does the morning go?', [
+    'Slowly, before getting up at all.',
+    'Breakfast, then straight back to bed.',
+    'A shower together.',
+    'A morning walk, then a long afternoon.',
+  ], 'When could you have a morning like this?', { setup: 'A lazy morning in a hotel room. Sunlight through white curtains, nowhere to be until evening.' }),
+  choice('fantasy', 'fs-letter', 'What would your sealed letter describe?', [
+    'Something I have imagined about us.',
+    'Exactly how I would like the night to go.',
+    'Something I want to try, with my limits.',
+    'What I find most irresistible about them.',
+  ], 'Would you write it?', { setup: 'You each write a sealed letter about a fantasy, to be opened together on a night you both choose.' }),
+  choice('fantasy', 'fs-escape', 'Where are you going?', [
+    'A city where nobody knows us.',
+    'A beach house with no neighbours.',
+    'A luxurious hotel suite.',
+    'Wherever my partner has secretly booked.',
+  ], 'What would you pack?', { setup: 'Your partner hands you a packed bag and says you have twenty minutes. You will be back in two days.' }),
+];

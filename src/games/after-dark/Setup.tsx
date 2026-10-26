@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ComponentType } from 'react';
 import { Check, LockKeyhole, ShieldCheck } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Note, Waiting } from '../../components/session/Parts';
@@ -162,7 +162,17 @@ export function TermsSummary({ terms }: { terms: Terms }) {
 }
 
 /** Pre-game: both confirm privately; the game starts only on shared terms. */
-export function SetupPhase({ view, s, terms, onStart }: GameProps & { terms: Terms | null; onStart: () => Promise<unknown> }) {
+export type SetupFormProps = GameProps & { onDone?: () => void; submitLabel?: string };
+
+export function SetupPhase({
+  view,
+  s,
+  terms,
+  onStart,
+  Form = SetupForm,
+  Summary = TermsSummary,
+  intro = 'Each of you chooses privately. The game only uses what you both say yes to.',
+}: GameProps & { terms: Terms | null; onStart: () => Promise<unknown>; Form?: ComponentType<SetupFormProps>; Summary?: ComponentType<{ terms: Terms }>; intro?: string }) {
   const { busy, run } = useBusy();
   const [editing, setEditing] = useState(false);
   const names = seatNames(view);
@@ -173,9 +183,9 @@ export function SetupPhase({ view, s, terms, onStart }: GameProps & { terms: Ter
     return (
       <div>
         <h1 className="text-[1.6rem] font-semibold tracking-[-0.02em]">Set your boundaries</h1>
-        <p className="mt-1.5 text-ink-soft">Each of you chooses privately. The game only uses what you both say yes to.</p>
+        <p className="mt-1.5 text-ink-soft">{intro}</p>
         <div className="mt-7">
-          <SetupForm view={view} s={s} onDone={() => setEditing(false)} submitLabel={mine ? 'Update my choices' : "I'm ready"} />
+          <Form view={view} s={s} onDone={() => setEditing(false)} submitLabel={mine ? 'Update my choices' : "I'm ready"} />
         </div>
       </div>
     );
@@ -193,7 +203,7 @@ export function SetupPhase({ view, s, terms, onStart }: GameProps & { terms: Ter
         </Note>
       ) : (
         <>
-          <TermsSummary terms={terms} />
+          <Summary terms={terms} />
           <Button size="lg" block loading={busy === 'go'} onClick={() => run('go', onStart)}>
             Start playing
           </Button>

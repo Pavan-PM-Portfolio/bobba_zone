@@ -9,6 +9,7 @@ import type { GameProps } from '../types';
 import { contentCap, levelTitle, type Terms } from './content/taxonomy';
 import { modeById, type ModeId } from './modes';
 import { SetupForm, SetupPhase } from './Setup';
+import { DesireSetupForm, DesireTermsSummary } from './DesireSetup';
 import { useTerms } from './shared';
 
 export interface ModeProps extends GameProps {
@@ -17,6 +18,7 @@ export interface ModeProps extends GameProps {
 
 const MODE_COMPONENTS: Record<ModeId, ComponentType<ModeProps>> = {
   mcq: lazy(() => import('./modes/QuestionGame')),
+  desire: lazy(() => import('./modes/DesireGame')),
   truth_dare: lazy(() => import('./modes/TruthOrDare')),
   pick_one: lazy(() => import('./modes/PickOne')),
   desires: lazy(() => import('./modes/SecretDesires')),
@@ -35,6 +37,8 @@ export default function AfterDark({ view, s }: GameProps) {
   const [prefsOpen, setPrefsOpen] = useState(false);
   const [stopOpen, setStopOpen] = useState(false);
   const { busy, run } = useBusy();
+  const desire = mode.id === 'desire';
+  const Form = desire ? DesireSetupForm : SetupForm;
 
   if (!completed && started && terms === null) return <FullPageLoader label="Loading your boundaries" />;
   if (!completed && (!started || !terms?.agreed)) {
@@ -43,6 +47,9 @@ export default function AfterDark({ view, s }: GameProps) {
         view={view}
         s={s}
         terms={terms}
+        Form={Form}
+        Summary={desire ? DesireTermsSummary : undefined}
+        intro={desire ? 'Desire Mode is for two consenting adults. Each of you chooses privately which topics you are open to. Only topics you both choose are ever shown.' : undefined}
         onStart={async () => {
           await s.patch((st) => (st.phase === 'play' ? null : { phase: 'play' }));
           await reload();
@@ -60,7 +67,7 @@ export default function AfterDark({ view, s }: GameProps) {
           <div className="flex items-center gap-2.5">
             <mode.icon className="size-4.5 text-accent" aria-hidden="true" />
             <span className="font-medium">{mode.title}</span>
-            {terms.agreed && mode.id !== 'mcq' && (
+            {terms.agreed && mode.id !== 'mcq' && !desire && (
               <span className="rounded-[4px] bg-shell px-1.5 py-0.5 text-xs font-medium text-accent-deep">
                 Level {contentCap(terms.level ?? 1)}, {levelTitle(terms.level ?? 1)}
               </span>
@@ -91,8 +98,8 @@ export default function AfterDark({ view, s }: GameProps) {
       )}
 
       <Dialog wide open={prefsOpen} onClose={() => setPrefsOpen(false)} title="Your boundaries" actions={<Button variant="secondary" onClick={() => setPrefsOpen(false)}>Close</Button>}>
-        <p className="mb-4">Change anything, any time. Lowering your intensity or removing a category applies straight away. Your partner only sees the shared result.</p>
-        <SetupForm
+        <p className="mb-4">Change anything, any time. Removing a category or lowering your intensity applies straight away. Your partner only sees the shared result.</p>
+        <Form
           view={view}
           s={s}
           submitLabel="Apply"
