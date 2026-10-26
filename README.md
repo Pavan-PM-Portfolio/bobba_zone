@@ -45,6 +45,10 @@ tests/
 
 ---
 
+## Fast path
+
+From the repo root on your Mac: `bash scripts/setup.sh`. It installs, runs the tests, links Supabase, applies all migrations, enables anonymous sign-ins (`supabase config push`), sets the GitHub repo variables and Pages source (via `gh`), and pushes. Sections 1 and 3 below are the same steps done by hand.
+
 ## 1. Supabase setup
 
 Project used here: **Bobba_Zone** (`frzsmsufnnlqptvzhfqu`, Sydney).
