@@ -1,36 +1,36 @@
 import { lazy, Suspense } from 'react';
-import { createHashRouter, Link, RouterProvider } from 'react-router-dom';
+import { createHashRouter, Link, Navigate, RouterProvider } from 'react-router-dom';
 import { AuthProvider, useAuth } from './lib/auth';
 import { isConfigured } from './lib/supabase';
 import { ToastProvider } from './components/ui/Toast';
 import { FullPageLoader } from './components/ui/Spinner';
 import { Shell } from './components/ui/Shell';
-import { Button } from './components/ui/Button';
 import Welcome from './pages/Welcome';
 
+const Login = lazy(() => import('./pages/Login'));
 const CreateGame = lazy(() => import('./pages/CreateGame'));
 const JoinGame = lazy(() => import('./pages/JoinGame'));
 const Room = lazy(() => import('./pages/Room'));
 const History = lazy(() => import('./pages/History'));
 const HistoryDetail = lazy(() => import('./pages/HistoryDetail'));
 
-/** Pages that talk to the server wait for the guest session first. */
+/** Pages that talk to the server need a signed-in account. */
 function Authed({ children }: { children: React.ReactNode }) {
   const auth = useAuth();
   if (auth.status === 'loading') return <FullPageLoader label="Getting things ready" />;
-  if (auth.status === 'error')
+  // Login renders in place, so after signing in the requested page
+  // (e.g. an invite link) appears without any redirect.
+  if (auth.status === 'signed_out')
     return (
-      <Shell>
-        <div className="pt-10 text-center">
-          <h1 className="font-display text-3xl">We couldn't connect</h1>
-          <p className="mx-auto mt-3 max-w-sm text-ink-soft">{auth.error}</p>
-          <Button className="mt-6" onClick={auth.retry}>
-            Try again
-          </Button>
-        </div>
-      </Shell>
+      <Suspense fallback={<FullPageLoader />}>
+        <Login />
+      </Suspense>
     );
   return <Suspense fallback={<FullPageLoader />}>{children}</Suspense>;
+}
+
+function SignedInRedirect() {
+  return <Navigate to="/" replace />;
 }
 
 function NotFound() {
@@ -62,6 +62,7 @@ function SetupNeeded() {
 // with no server-side rewrites: /bobba_zone/#/join/ABCD2345
 const router = createHashRouter([
   { path: '/', element: <Welcome /> },
+  { path: '/login', element: <Authed><SignedInRedirect /></Authed> },
   { path: '/create', element: <Authed><CreateGame /></Authed> },
   { path: '/join', element: <Authed><JoinGame /></Authed> },
   { path: '/join/:code', element: <Authed><JoinGame /></Authed> },

@@ -3,7 +3,7 @@
 A private, real-time, two-player game for couples. Both partners answer the same "who is more likely to..." question on their own phones, in secret. When both have locked in, the answers are revealed on both screens at the same moment.
 
 - **Frontend:** React 19 + TypeScript (strict) + Vite + Tailwind CSS v4 + Lucide icons
-- **Backend:** Supabase - Postgres, anonymous Auth, Realtime private channels, RLS
+- **Backend:** Supabase - Postgres, email/password Auth (admin-created accounts), Realtime private channels, RLS
 - **Game logic:** server-authoritative PostgreSQL RPC functions (no separate server)
 - **Hosting:** GitHub Pages via GitHub Actions
 
@@ -15,7 +15,7 @@ Live site: `https://pavan-pm-portfolio.github.io/bobba_zone/`
 
 | Concern | Where it lives |
 | --- | --- |
-| Identity | Supabase anonymous sign-in. Each browser gets a real auth user; the session persists, so refreshing reclaims the same seat. |
+| Identity | Email + password accounts that you create in Supabase (no public sign-up). The session persists, so refreshing reclaims the same seat. Anonymous sessions are refused by every RPC. |
 | Game state | Postgres. React only mirrors `get_game_state()`. |
 | Writes | RPC functions (`create_room`, `join_room`, `submit_answer`, ...). Clients have **no** direct table write access. |
 | Answer privacy | The `answers` table is unreadable by clients. Answers leave the database only through `get_game_state` / `get_completed_results`, and only after a question is revealed. |
@@ -31,6 +31,7 @@ supabase/migrations/
   20261026000200_game_functions.sql         all game RPCs + helpers
   20261026000300_realtime_authorization.sql private-channel policies
   20261026000400_seed_questions.sql         60 questions (4 rounds x 15)
+  20261027000500_require_signed_in_accounts.sql  RPCs refuse anonymous sessions
 src/
   lib/        supabase client, typed API layer, auth provider, errors, pure game logic
   hooks/      useRoom (state + realtime + presence + polling + recovery)
@@ -47,7 +48,7 @@ tests/
 
 ## Fast path
 
-From the repo root on your Mac: `bash scripts/setup.sh`. It installs, runs the tests, links Supabase, applies all migrations, enables anonymous sign-ins (`supabase config push`), sets the GitHub repo variables and Pages source (via `gh`), and pushes. Sections 1 and 3 below are the same steps done by hand.
+From the repo root on your Mac: `bash scripts/setup.sh`. It installs, runs the tests, links Supabase, applies all migrations, applies auth settings (`supabase config push`: email login on, sign-up and anonymous off), sets the GitHub repo variables and Pages source (via `gh`), and pushes. Sections 1 and 3 below are the same steps done by hand.
 
 ## 1. Supabase setup
 
@@ -61,12 +62,18 @@ Project used here: **Bobba_Zone** (`frzsmsufnnlqptvzhfqu`, Sydney).
      npx supabase db push        # applies supabase/migrations/* in order, incl. the question seed
      ```
    - **Dashboard:** SQL Editor -> run each file in `supabase/migrations/` in filename order.
-2. **Enable anonymous sign-ins:** Authentication -> Sign In / Providers -> *Allow anonymous sign-ins* -> on.
-   - Recommended: keep Supabase's default anonymous sign-in rate limit, and enable CAPTCHA (Turnstile/hCaptcha) later if you see abuse.
-3. **Realtime:** no table replication is needed (we use broadcast + presence, not `postgres_changes`). Under Realtime -> Settings you may turn **off** "Allow public access" so only private channels are allowed.
-4. **URL configuration:** Authentication -> URL Configuration -> Site URL `https://pavan-pm-portfolio.github.io/bobba_zone/` and add `http://localhost:5173/` to redirect URLs. (Anonymous auth has no redirects, but this keeps future email/OAuth sign-in working.)
-5. **Keys:** Project Settings -> API Keys -> copy the **publishable** key (`sb_publishable_...`) or the legacy **anon** key. Never use the secret/service-role key in this app.
-6. **Optional scheduled cleanup:** expired rooms are also cleaned whenever someone creates a room. To run it hourly regardless, enable the `pg_cron` extension and run:
+2. **Auth settings:** Authentication -> Sign In / Providers -> **Email** enabled; *Allow new users to sign up* **off**; *Allow anonymous sign-ins* **off**. (`supabase config push` applies all of this from `supabase/config.toml`.)
+3. **Create players:** Authentication -> Users -> **Add user** -> **Create new user** -> email + password, tick **Auto Confirm User**. Optional display name (pre-fills the name field):
+   ```sql
+   update auth.users
+      set raw_user_meta_data = coalesce(raw_user_meta_data, '{}'::jsonb) || '{"display_name":"Shreya"}'
+    where email = 'shreya@example.com';
+   ```
+   To reset a password: Users -> the user -> **...** -> *Change password* (or *Send password recovery*).
+4. **Realtime:** no table replication is needed (we use broadcast + presence, not `postgres_changes`). Under Realtime -> Settings you may turn **off** "Allow public access" so only private channels are allowed.
+5. **URL configuration:** Authentication -> URL Configuration -> Site URL `https://pavan-pm-portfolio.github.io/bobba_zone/` and add `http://localhost:5173/` to redirect URLs. (Needed for password-recovery emails.)
+6. **Keys:** Project Settings -> API Keys -> copy the **publishable** key (`sb_publishable_...`) or the legacy **anon** key. Never use the secret/service-role key in this app.
+7. **Optional scheduled cleanup:** expired rooms are also cleaned whenever someone creates a room. To run it hourly regardless, enable the `pg_cron` extension and run:
    ```sql
    select cron.schedule('cleanup-rooms', '17 * * * *', $$select public.cleanup_expired_rooms()$$);
    ```
@@ -83,11 +90,11 @@ Questions are rows in `public.questions` (`slug` is the stable id, `category`, `
 npm install
 cp .env.example .env.local     # fill in URL + publishable key
 npm run dev                     # http://localhost:5173
-npm test                        # 51 tests: database security + unit
+npm test                        # 52 tests: database security + unit
 npm run build                   # typecheck + production build
 ```
 
-To play locally with two players, open the app in two **different browser profiles** (or one normal + one private window). Two tabs of the same profile share one guest identity, i.e. one seat.
+To play locally with two players, sign in as two different accounts in two **different browser profiles** (or one normal + one private window). Two tabs of the same profile share one session, i.e. one seat.
 
 ---
 
@@ -116,8 +123,8 @@ These work on first load, on refresh and when shared, with no server config. The
 
 Use two devices, or two browser profiles.
 
-1. **A** opens the site -> *Create a game* -> name "Shreya", Quick play -> lands in the lobby with a code and an empty second seat.
-2. **A** copies the invite link and sends it. **B** opens it -> code is pre-filled -> name "Pavan" -> *Join game*. A's lobby shows Pavan within ~1s without refreshing.
+1. **A** signs in -> *Create a game* -> name "Shreya", Quick play -> lands in the lobby with a code and an empty second seat.
+2. **A** copies the invite link and sends it. **B** opens it -> signs in -> code is pre-filled -> name "Pavan" -> *Join game*. A's lobby shows Pavan within ~1s without refreshing.
 3. Try to join with a third profile: it gets "That code doesn't match an open game...".
 4. Both tap *I'm ready*. Only A sees an enabled *Start the game*. A starts; both screens switch to question 1.
 5. **A** picks a name and locks in. A sees "Your answer is locked in. Waiting for Pavan". B sees "Shreya has answered" but **not** the choice.
@@ -155,8 +162,9 @@ Use two devices, or two browser profiles.
 
 ## 6. Deployment checklist
 
-- [ ] Migrations 100-400 applied (`supabase db push`) - `select count(*) from public.questions` returns 60
-- [ ] Anonymous sign-ins enabled
+- [ ] Migrations 100-500 applied (`supabase db push`) - `select count(*) from public.questions` returns 60
+- [ ] Email login on, public sign-up off, anonymous off
+- [ ] Player accounts created (Auto Confirm)
 - [ ] Site URL / redirect URLs set
 - [ ] (Optional) Realtime "Allow public access" off
 - [ ] GitHub Pages source = GitHub Actions
@@ -184,7 +192,7 @@ Use two devices, or two browser profiles.
 
 ## Known limitations
 
-- Identity is per browser. Clearing site data or switching devices mid-game means a new guest identity that can't reclaim the old seat (the room is still visible to the other player). Upgrading anonymous users to email accounts would fix this.
-- A determined user can create many anonymous identities to bypass per-user join rate limits; Supabase's per-IP anonymous sign-in limit and the code space make guessing impractical, and CAPTCHA can be enabled for more protection.
+- Accounts are admin-created; there's no self-service sign-up or password reset screen in the app (reset from the Supabase dashboard).
+- Signing in on another device reclaims the same seat, since seats belong to the account.
 - Presence ("Here"/"Away") depends on Realtime; if Realtime is down, the game still works via polling but presence shows Away.
 - Database tests use PGlite (single connection). True parallel transactions are covered by row locks in the SQL, but concurrency is verified logically (compare-and-set, idempotency) rather than with two live connections.

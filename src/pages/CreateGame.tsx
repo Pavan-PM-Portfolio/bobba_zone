@@ -10,12 +10,14 @@ import { api } from '../lib/api';
 import { toAppError } from '../lib/errors';
 import { MODES, ROUNDS, questionCount } from '../lib/game';
 import { rememberName, rememberedName } from '../lib/prefs';
+import { useAuth } from '../lib/auth';
 import type { Category, Mode } from '../lib/types';
 
 export default function CreateGame() {
   const navigate = useNavigate();
   const toast = useToast();
-  const [name, setName] = useState(rememberedName);
+  const { accountName } = useAuth();
+  const [name, setName] = useState(() => rememberedName() || accountName);
   const [couple, setCouple] = useState('');
   const [mode, setMode] = useState<Mode>('standard');
   const [rounds, setRounds] = useState<Category[]>(ROUNDS.map((r) => r.id));

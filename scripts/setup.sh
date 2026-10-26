@@ -23,9 +23,9 @@ npx -y supabase link --project-ref "$REF" || { warn "supabase link failed"; exit
 say "Supabase: applying migrations (schema, RLS, game functions, realtime auth, 60 questions)"
 npx -y supabase db push --include-all || { warn "db push failed"; exit 1; }
 
-say "Supabase: enabling anonymous sign-ins + site URL (review the diff, then confirm)"
+say "Supabase: auth settings - email login on, public sign-up and anonymous off (review the diff, then confirm)"
 npx -y supabase config push --project-ref "$REF" \
-  || warn "config push skipped - enable anonymous sign-ins manually (see last step)"
+  || warn "config push skipped - set auth options manually (see README)"
 
 say "Supabase: reading the publishable key (never the secret key)"
 KEY=$(npx -y supabase projects api-keys --project-ref "$REF" -o json 2>/dev/null | node -e '
@@ -64,9 +64,9 @@ fi
 say "Pushing to GitHub (this triggers the deploy)"
 git push -u origin main || { warn "git push failed"; exit 1; }
 
-say "Check: anonymous sign-ins should now show as ON"
-echo "Supabase -> Authentication -> Sign In / Providers -> 'Allow anonymous sign-ins'"
-open "https://supabase.com/dashboard/project/$REF/auth/providers" 2>/dev/null || true
+say "Next: create player accounts"
+echo "Supabase -> Authentication -> Users -> Add user -> Create new user (tick Auto Confirm User)"
+open "https://supabase.com/dashboard/project/$REF/auth/users" 2>/dev/null || true
 
 say "Done"
 echo "Deploy progress: https://github.com/$REPO/actions"

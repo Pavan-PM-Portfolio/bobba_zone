@@ -8,12 +8,14 @@ import { api } from '../lib/api';
 import { toAppError } from '../lib/errors';
 import { formatInviteCode, isWellFormedInviteCode, normalizeInviteCode } from '../lib/game';
 import { rememberName, rememberedName } from '../lib/prefs';
+import { useAuth } from '../lib/auth';
 
 export default function JoinGame() {
   const { code: codeParam } = useParams();
   const navigate = useNavigate();
   const [code, setCode] = useState(codeParam ? formatInviteCode(codeParam) : '');
-  const [name, setName] = useState(rememberedName);
+  const { accountName } = useAuth();
+  const [name, setName] = useState(() => rememberedName() || accountName);
   const [codeError, setCodeError] = useState<string | null>(null);
   const [nameError, setNameError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);

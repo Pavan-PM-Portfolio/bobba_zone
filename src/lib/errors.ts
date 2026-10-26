@@ -1,6 +1,7 @@
 /** Maps server error codes (raised by the RPCs) to friendly, actionable copy. */
 const MESSAGES: Record<string, string> = {
-  not_authenticated: 'Your session ended. Refresh the page to continue.',
+  not_authenticated: 'Your session ended. Sign in again to continue.',
+  account_required: 'Sign in with your account to play.',
   invalid_name: 'Names need 1 to 30 characters.',
   invalid_mode: 'Choose a game length.',
   invalid_rounds: 'Choose at least one round.',

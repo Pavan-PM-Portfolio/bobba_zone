@@ -127,6 +127,23 @@ describe('room creation and joining', () => {
     );
   });
 
+  it('refuses anonymous Supabase sessions (accounts only)', async () => {
+    const anon = await db.newUser();
+    const asAnon = (sql: string) =>
+      db.pg.transaction(async (tx) => {
+        await tx.query(`select set_config('request.jwt.claim.sub', $1, true)`, [anon]);
+        await tx.query(`select set_config('request.jwt.claims', $1, true)`, [
+          JSON.stringify({ sub: anon, role: 'authenticated', is_anonymous: true }),
+        ]);
+        await tx.exec('set local role authenticated');
+        return tx.query(sql);
+      });
+    await expectError(asAnon(`select public.create_room('Sneaky')`), 'account_required');
+    await expectError(asAnon(`select public.get_history()`), 'account_required');
+    const member = await asAnon(`select public.is_room_channel_member('room:00000000-0000-0000-0000-000000000000') ok`);
+    expect((member.rows[0] as { ok: boolean }).ok).toBe(false);
+  });
+
   it('accepts codes typed in lowercase with spaces/dashes', async () => {
     const host = await db.newUser();
     const partner = await db.newUser();

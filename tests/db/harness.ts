@@ -24,6 +24,10 @@ const SUPABASE_STUBS = `
     select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
   $$;
   grant execute on function auth.uid() to anon, authenticated;
+  create function auth.jwt() returns jsonb language sql stable as $$
+    select coalesce(nullif(current_setting('request.jwt.claims', true), ''), '{}')::jsonb
+  $$;
+  grant execute on function auth.jwt() to anon, authenticated;
 
   create schema realtime;
   grant usage on schema realtime to authenticated;
@@ -64,6 +68,9 @@ export interface Db {
 async function asUser<T>(pg: PGlite, uid: string, extra: Record<string, string>, fn: (tx: Transaction) => Promise<T>) {
   return pg.transaction(async (tx) => {
     await tx.query(`select set_config('request.jwt.claim.sub', $1, true)`, [uid]);
+    await tx.query(`select set_config('request.jwt.claims', $1, true)`, [
+      JSON.stringify({ sub: uid, role: 'authenticated', is_anonymous: false }),
+    ]);
     for (const [k, v] of Object.entries(extra)) {
       await tx.query(`select set_config($1, $2, true)`, [k, v]);
     }
