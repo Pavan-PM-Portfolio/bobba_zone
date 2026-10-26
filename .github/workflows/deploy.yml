@@ -32,11 +32,8 @@ jobs:
       - name: Build
         run: npx vite build
         env:
-          # Repository variables (Settings > Secrets and variables > Actions > Variables)
-          # or secrets with the same names. The publishable key is public by design;
-          # RLS + the RPC checks are what protect the data.
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          # Supabase URL + publishable key come from the committed .env.production
+          # (public values). Shell env would override it, so none are set here.
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
       - name: Guard against leaked secrets in the bundle
         run: |
