@@ -27,11 +27,13 @@ export class SignInError extends Error {}
 function friendlyAuthError(raw: string, status?: number): string {
   if (/invalid login credentials/i.test(raw)) return "That email and password don't match an account.";
   if (/email not confirmed/i.test(raw)) return 'This account still needs to be confirmed. Ask the person who set it up.';
+  if (/email logins? (are|is) disabled|email_provider_disabled|provider.*disabled/i.test(raw))
+    return 'Email sign-in is switched off for this app. Turn on the Email provider in Supabase (Authentication > Sign In / Providers).';
   if (status === 429 || /rate limit|too many/i.test(raw)) return 'Too many attempts. Wait a minute, then try again.';
   if (/invalid api key|no api key/i.test(raw) || status === 401)
     return "The app can't reach its server right now (configuration). Try again later.";
   if (/fetch|network/i.test(raw)) return "You seem to be offline. Check your connection and try again.";
-  return 'Sign-in failed. Please try again.';
+  return raw ? `Sign-in failed: ${raw}` : 'Sign-in failed. Please try again.';
 }
 
 /**

@@ -34,5 +34,7 @@ enable_anonymous_sign_ins = false
 anonymous_users = 30
 
 [auth.email]
-enable_signup = false
+# NOTE: this flag turns the email PROVIDER on/off (login included), not just
+# sign-up. Keep it true. Public sign-up is blocked by [auth] enable_signup = false.
+enable_signup = true
 enable_confirmations = true
