@@ -144,7 +144,7 @@ export const GAMES: GameDef[] = [
     id: 'velvet',
     title: 'VELVET: Body & Desire',
     tagline: 'Tap, choose, reveal together. 18+.',
-    description: 'Over 400 sensual questions: body map, turn-ons, fantasies, kinks and secret curiosities. Tap-only, private picks stay private.',
+    description: 'Over 440 sensual questions: body map, turn-ons, fantasies, kinks and secret curiosities. Tap-only, private picks stay private.',
     format: 'Simultaneous',
     duration: '20-90 min',
     icon: Gem,
