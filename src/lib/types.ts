@@ -105,3 +105,114 @@ export interface HistoryItem {
   results: GameResults | null;
   players: { player_number: PlayerNumber; display_name: string }[];
 }
+
+// ---------------------------------------------------------------------
+// Sessions (games 2-10)
+// ---------------------------------------------------------------------
+export type GameId =
+  | 'likely'
+  | 'know_me'
+  | 'love_story'
+  | 'after_hours'
+  | 'future'
+  | 'trust'
+  | 'conflict'
+  | 'quest'
+  | 'mystery'
+  | 'story';
+
+export type SessionGame = Exclude<GameId, 'likely'>;
+export type SessionStatus = 'waiting' | 'in_progress' | 'completed' | 'cancelled' | 'expired';
+
+export interface Entry<P = Record<string, unknown>> {
+  key: string;
+  player_number: PlayerNumber;
+  payload: P;
+  at: string;
+}
+
+export interface SessionView {
+  session: {
+    id: string;
+    game: SessionGame;
+    invite_code: string;
+    title: string | null;
+    status: SessionStatus;
+    settings: Record<string, unknown>;
+    state: Record<string, unknown>;
+    state_version: number;
+    created_at: string;
+    started_at: string | null;
+    completed_at: string | null;
+    updated_at: string;
+  };
+  me: { player_number: PlayerNumber; is_host: boolean };
+  players: PlayerSummary[];
+  entries: Entry[];
+  partner_pending: string[];
+  server_time: string;
+}
+
+export interface DashboardSession {
+  id: string;
+  game: SessionGame;
+  title: string | null;
+  status: SessionStatus;
+  created_at: string;
+  updated_at: string;
+  completed_at: string | null;
+  invite_code: string;
+  my_seat: PlayerNumber;
+  players: { player_number: PlayerNumber; display_name: string }[] | null;
+}
+
+export interface DashboardRoom {
+  id: string;
+  title: string | null;
+  status: RoomStatus;
+  created_at: string;
+  completed_at: string | null;
+  invite_code: string;
+  question_count: number;
+  current_index: number;
+  agreement: number | null;
+  my_seat: PlayerNumber;
+  players: { player_number: PlayerNumber; display_name: string }[] | null;
+}
+
+export interface Moment {
+  id: string;
+  game: string;
+  title: string;
+  body: string | null;
+  created_at: string;
+  session_id: string | null;
+  room_id: string | null;
+  mine: boolean;
+}
+
+export interface Dashboard {
+  sessions: DashboardSession[];
+  rooms: DashboardRoom[];
+  moments: Moment[];
+}
+
+export interface MysteryView {
+  case: { id: string; title: string; intro: string; ending: string | null };
+  chapter: number;
+  total_chapters: number;
+  solved: boolean;
+  chapters: {
+    no: number;
+    title: string;
+    scene: string;
+    question: string;
+    options: { id: string; label: string }[];
+    resolution: string | null;
+    my_clues: { no: number; title: string; body: string }[];
+    partner_clue_count: number;
+    hints: string[];
+    hints_available: number;
+    attempts: number;
+  }[];
+}

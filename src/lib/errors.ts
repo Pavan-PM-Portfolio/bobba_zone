@@ -8,7 +8,7 @@ const MESSAGES: Record<string, string> = {
   invalid_input: 'Something in that request was not valid. Try again.',
   invalid_choice: 'Pick one of the two names.',
   rate_limited: 'Too many attempts. Wait a few minutes, then try again.',
-  room_unavailable: "That code doesn't match an open game. It may have expired, already started, or be full.",
+  room_unavailable: "That code doesn't match an open game. It may have expired, already started or be full.",
   room_not_found: "This game doesn't exist or you aren't one of its players.",
   room_expired: 'This game expired after a day without activity. Start a new one.',
   room_not_waiting: 'The game has already started.',
@@ -21,10 +21,16 @@ const MESSAGES: Record<string, string> = {
   question_not_found: 'That question is not part of this game.',
   question_not_current: 'The game has moved on to another question.',
   question_closed: 'This question has already been revealed.',
+  question_not_revealed: 'You can explain your pick once both answers are revealed.',
   question_not_finished: 'Both of you need to answer (or agree to skip) first.',
   already_submitted: 'Your answer is already locked in.',
   no_questions: 'No questions are available for those rounds right now.',
   try_again: 'Something went wrong creating the game. Try again.',
+  session_not_found: "This game doesn't exist or you aren't one of its players.",
+  session_not_active: 'This game has ended.',
+  session_expired: 'This game expired after 30 days without activity.',
+  invalid_game: "That game isn't available.",
+  not_found: 'That item no longer exists.',
 };
 
 export class AppError extends Error {

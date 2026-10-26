@@ -22,15 +22,18 @@ export default function HistoryDetail() {
   const [confirm, setConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  const [notes, setNotes] = useState<{ question_index: number; player_number: PlayerNumber; text: string }[]>([]);
   useEffect(() => {
-    if (roomId) api.completedResults(roomId).then(setData).catch((e) => setError(toAppError(e)));
+    if (!roomId) return;
+    api.completedResults(roomId).then(setData).catch((e) => setError(toAppError(e)));
+    api.roomNotes(roomId).then(setNotes).catch(() => {});
   }, [roomId]);
 
   async function remove() {
     if (!roomId) return;
     setDeleting(true);
     try {
-      await api.deleteSession(roomId);
+      await api.deleteRoom(roomId);
       toast('Game deleted.', 'success');
       navigate('/history', { replace: true });
     } catch (e) {
@@ -46,29 +49,29 @@ export default function HistoryDetail() {
 
   return (
     <Shell>
-      <Link to="/history" className="inline-flex items-center gap-1 rounded-full text-sm font-semibold text-ink-soft hover:text-ink">
+      <Link to="/history" className="inline-flex items-center gap-1 text-sm font-medium text-ink-mute hover:text-ink">
         <ChevronLeft className="size-4" aria-hidden="true" /> Past games
       </Link>
       {error ? (
-        <p className="mt-8 rounded-2xl bg-blush-soft p-5 font-medium text-rose-deep">{error.message}</p>
+        <p className="mt-8 rounded-[10px] bg-danger-soft p-4 text-danger">{error.message}</p>
       ) : !data ? (
         <FullPageLoader />
       ) : (
-        <div className="mt-4 space-y-8">
+        <div className="mt-6 space-y-10">
           <div>
-            <h1 className="font-display text-4xl text-balance">{data.room.couple_name || `${names[1]} & ${names[2]}`}</h1>
+            <h1 className="text-[1.75rem] font-semibold tracking-[-0.025em] text-balance">{data.room.couple_name || `${names[1]} & ${names[2]}`}</h1>
             <p className="mt-2 text-ink-soft">Played {dateFmt.format(new Date(data.room.completed_at))}</p>
           </div>
           {data.results && <ResultsSummary results={data.results} names={names} questions={data.questions} />}
           <section aria-labelledby="all">
-            <h2 id="all" className="font-display text-2xl">
+            <h2 id="all" className="text-[1.05rem] font-semibold">
               Every answer
             </h2>
             <div className="mt-4">
-              <AnswerList questions={data.questions} names={names} />
+              <AnswerList questions={data.questions} names={names} notes={notes} />
             </div>
           </section>
-          <div className="border-t border-line pt-6 text-center">
+          <div className="border-t border-line pt-6">
             <Button variant="ghost" icon={<Trash2 className="size-4" aria-hidden="true" />} onClick={() => setConfirm(true)}>
               Delete this game
             </Button>
@@ -85,7 +88,7 @@ export default function HistoryDetail() {
               Keep it
             </Button>
             <Button variant="danger" loading={deleting} onClick={remove}>
-              Delete for both of us
+              Delete for both of you
             </Button>
           </>
         }

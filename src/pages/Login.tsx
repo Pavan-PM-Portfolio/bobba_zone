@@ -1,22 +1,12 @@
 import { useState, type FormEvent } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Eye, EyeOff, LockKeyhole } from 'lucide-react';
-import { Logo } from '../components/ui/Logo';
+import { Eye, EyeOff } from 'lucide-react';
+import { LogoMark } from '../components/ui/Logo';
 import { Field } from '../components/ui/Field';
 import { Button } from '../components/ui/Button';
+import { GAMES } from '../games/registry';
 import { SignInError, useAuth } from '../lib/auth';
 import { formatInviteCode } from '../lib/game';
-
-/** The brand mark at poster scale: two overlapping seats and the shared space between them. */
-function Mark() {
-  return (
-    <svg viewBox="0 0 320 220" className="w-full max-w-[22rem]" aria-hidden="true">
-      <circle cx="122" cy="110" r="96" fill="#F0A6BA" />
-      <circle cx="198" cy="110" r="96" fill="#C9BDF2" fillOpacity=".9" />
-      <path d="M160 35c26 21 42 48 42 75s-16 54-42 75c-26-21-42-48-42-75s16-54 42-75z" fill="#FFFCF8" />
-    </svg>
-  );
-}
 
 export default function Login() {
   const { signIn } = useAuth();
@@ -28,7 +18,6 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-
   const invite = location.pathname.match(/^\/join\/([A-Za-z0-9]+)/)?.[1];
 
   async function submit(e: FormEvent) {
@@ -47,7 +36,6 @@ export default function Login() {
     setBusy(true);
     try {
       await signIn(email, password);
-      // AuthProvider flips to signed_in and the requested page renders in place.
     } catch (err) {
       setError(err instanceof SignInError ? err.message : 'Sign-in failed. Please try again.');
       setBusy(false);
@@ -55,41 +43,18 @@ export default function Login() {
   }
 
   return (
-    <div className="grid min-h-dvh lg:grid-cols-[1.05fr_1fr]">
-      {/* Brand panel */}
-      <aside className="relative hidden overflow-hidden bg-ink text-paper lg:flex lg:flex-col lg:justify-between lg:p-12">
-        <div className="flex items-center gap-3">
-          <span className="font-display text-xl">Who's More Likely?</span>
+    <div className="grid min-h-dvh lg:grid-cols-[1fr_minmax(0,34rem)]">
+      <main id="main" className="flex flex-col px-5 pt-[max(1.5rem,env(safe-area-inset-top))] pb-10 sm:px-10">
+        <div className="flex items-center gap-2.5">
+          <LogoMark />
+          <span className="font-semibold tracking-[-0.015em]">Between Us</span>
         </div>
-        <div className="mx-auto w-full max-w-md">
-          <Mark />
-          <p className="mt-10 font-display text-[2.75rem] leading-[1.06] text-balance">A private game for the two of you.</p>
-          <p className="mt-4 max-w-sm text-lg text-paper/70">
-            Answer in secret, reveal together, and find out how alike you see each other.
+        <div className="mx-auto flex w-full max-w-[23rem] flex-1 flex-col justify-center py-12">
+          <h1 className="text-[1.75rem] leading-tight font-semibold tracking-[-0.025em]">{invite ? 'Sign in to join' : 'Sign in'}</h1>
+          <p className="mt-1.5 text-ink-soft">
+            {invite ? `Game ${formatInviteCode(invite)} is waiting for you.` : 'Welcome back. Use the email and password you were given.'}
           </p>
-        </div>
-        <p className="text-sm text-paper/50">Your answers are only ever visible to the two players in a game.</p>
-      </aside>
-
-      {/* Form */}
-      <main id="main" className="flex flex-col px-5 pt-[max(1.25rem,env(safe-area-inset-top))] pb-10 sm:px-10">
-        <div className="lg:hidden">
-          <Logo />
-        </div>
-        <div className="mx-auto flex w-full max-w-[24rem] flex-1 flex-col justify-center py-10">
-          <span className="grid size-12 place-items-center rounded-2xl bg-lavender-soft text-lilac-deep">
-            <LockKeyhole className="size-6" aria-hidden="true" />
-          </span>
-          <h1 className="mt-6 font-display text-[2.4rem] leading-[1.08]">
-            {invite ? 'Sign in to join' : 'Welcome back'}
-          </h1>
-          <p className="mt-2 text-ink-soft">
-            {invite
-              ? `Your partner invited you to game ${formatInviteCode(invite)}. Sign in and you'll go straight there.`
-              : 'Sign in with the email and password you were given.'}
-          </p>
-
-          <form onSubmit={submit} noValidate className="mt-8 space-y-5">
+          <form onSubmit={submit} noValidate className="mt-8 space-y-4">
             <Field
               label="Email"
               type="email"
@@ -102,49 +67,57 @@ export default function Login() {
                 setEmail(e.target.value);
                 setEmailError(null);
               }}
-              placeholder="you@example.com"
               error={emailError}
             />
-            <div className="relative">
-              <Field
-                label="Password"
-                type={show ? 'text' : 'password'}
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setPasswordError(null);
-                }}
-                className="[&_input]:pr-12"
-                error={passwordError}
-              />
-              <button
-                type="button"
-                onClick={() => setShow((s) => !s)}
-                className="absolute top-[2.35rem] right-2 grid size-9 place-items-center rounded-full text-ink-mute hover:bg-ink/5 hover:text-ink"
-                aria-label={show ? 'Hide password' : 'Show password'}
-                aria-pressed={show}
-              >
-                {show ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
-              </button>
-            </div>
-
+            <Field
+              label="Password"
+              type={show ? 'text' : 'password'}
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setPasswordError(null);
+              }}
+              error={passwordError}
+              trailing={
+                <button
+                  type="button"
+                  onClick={() => setShow((v) => !v)}
+                  className="grid size-8 place-items-center rounded-[4px] text-ink-mute hover:text-ink"
+                  aria-label={show ? 'Hide password' : 'Show password'}
+                  aria-pressed={show}
+                >
+                  {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </button>
+              }
+            />
             {error && (
-              <p role="alert" className="rounded-2xl bg-blush-soft px-4 py-3 text-[0.95rem] font-medium text-rose-deep">
+              <p role="alert" className="rounded-[6px] bg-danger-soft px-3.5 py-2.5 text-sm text-danger">
                 {error}
               </p>
             )}
-
-            <Button type="submit" size="lg" block loading={busy}>
+            <Button type="submit" size="lg" block loading={busy} className="!mt-6">
               Sign in
             </Button>
           </form>
-
-          <p className="mt-8 text-sm text-ink-mute">
-            No account yet, or forgot your password? Ask the person who set up the game to add you or reset it.
-          </p>
+          <p className="mt-8 text-sm text-ink-mute">Accounts are created by whoever set up Between Us. Ask them if you need access or a new password.</p>
         </div>
       </main>
+
+      <aside className="hidden border-l border-line bg-shell lg:flex lg:flex-col lg:justify-center lg:px-14">
+        <p className="text-sm font-medium text-accent-deep">Private games for two</p>
+        <p className="mt-3 max-w-[22rem] text-[1.6rem] leading-snug font-semibold tracking-[-0.025em] text-ink">
+          Learn how each other thinks, one question at a time.
+        </p>
+        <ul className="mt-10 space-y-2.5">
+          {GAMES.map((g) => (
+            <li key={g.id} className="flex items-center gap-3 text-[0.95rem] text-ink-soft">
+              <span className="size-1.5 rounded-full" style={{ background: g.tint.fg }} aria-hidden="true" />
+              {g.title}
+            </li>
+          ))}
+        </ul>
+      </aside>
     </div>
   );
 }

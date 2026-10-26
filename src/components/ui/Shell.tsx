@@ -1,39 +1,33 @@
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
-import { History, LogOut } from 'lucide-react';
+import { Link, NavLink } from 'react-router-dom';
+import { LogOut } from 'lucide-react';
 import { Logo } from './Logo';
 import { useOptionalAuth } from '../../lib/auth';
 import { initials } from '../../lib/game';
 
-function AccountButton() {
+function AccountMenu() {
   const auth = useOptionalAuth();
-  if (!auth) return null;
+  if (!auth || auth.status === 'loading') return null;
   const { status, accountName, user, signOut } = auth;
-  if (status === 'loading') return null;
   if (status !== 'signed_in') {
     return (
-      <Link
-        to="/login"
-        className="inline-flex h-10 items-center rounded-full bg-ink px-4 text-sm font-semibold text-paper hover:bg-[#2a3060]"
-      >
+      <Link to="/login" className="inline-flex h-9 items-center rounded-[6px] px-3 text-sm font-semibold text-ink hover:bg-mist">
         Sign in
       </Link>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-white py-1 pr-1 pl-1 ring-1 ring-line">
-      <span
-        className="grid size-8 place-items-center rounded-full bg-lavender font-display text-sm text-lilac-deep"
-        title={user?.email ?? undefined}
-        aria-hidden="true"
-      >
-        {initials(accountName || '?')}
+    <span className="flex items-center gap-1">
+      <span className="flex items-center gap-2 pl-1" title={user?.email ?? undefined}>
+        <span className="grid size-7 place-items-center rounded-full bg-accent-soft text-[0.7rem] font-semibold text-accent-deep" aria-hidden="true">
+          {initials(accountName || '?')}
+        </span>
+        <span className="hidden max-w-[10rem] truncate text-sm font-medium sm:inline">{accountName}</span>
       </span>
-      <span className="hidden max-w-[9rem] truncate px-1.5 text-sm font-semibold sm:inline">{accountName}</span>
       <button
         type="button"
         onClick={() => void signOut()}
-        className="grid size-8 place-items-center rounded-full text-ink-mute hover:bg-ink/5 hover:text-ink"
+        className="grid size-9 place-items-center rounded-[6px] text-ink-mute hover:bg-mist hover:text-ink"
         aria-label={`Sign out${user?.email ? ` (${user.email})` : ''}`}
         title="Sign out"
       >
@@ -43,29 +37,61 @@ function AccountButton() {
   );
 }
 
-export function Shell({ children, aside, wide }: { children: ReactNode; aside?: ReactNode; wide?: boolean }) {
+export function Shell({
+  children,
+  aside,
+  wide,
+  bare,
+  backdrop,
+}: {
+  children: ReactNode;
+  /** Decorative layer rendered behind the header and page (e.g. the aurora). */
+  backdrop?: ReactNode;
+  aside?: ReactNode;
+  wide?: boolean;
+  /** No bottom border on the header (used over the aurora). */
+  bare?: boolean;
+}) {
   return (
-    <div className="flex min-h-dvh flex-col">
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-paper">
+    <div className="relative flex min-h-dvh flex-col overflow-x-clip">
+      {backdrop}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-[6px] focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
+      >
         Skip to content
       </a>
-      <header className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-2 sm:px-6">
-        <Logo />
-        <div className="flex items-center gap-2">
-          {aside ?? (
-            <Link
-              to="/history"
-              className="inline-flex h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold text-ink-soft hover:bg-ink/5 hover:text-ink"
-              aria-label="Past games"
+      <header className={`relative z-10 ${bare ? '' : 'border-b border-line bg-white'}`}>
+        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 pt-[env(safe-area-inset-top)] sm:px-6">
+          <Logo />
+          <nav className="flex items-center gap-1" aria-label="Account">
+            {aside}
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) =>
+                `hidden h-9 items-center rounded-[6px] px-3 text-sm font-medium sm:inline-flex ${
+                  isActive ? 'text-ink' : 'text-ink-soft hover:bg-mist hover:text-ink'
+                }`
+              }
             >
-              <History className="size-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Past games</span>
-            </Link>
-          )}
-          <AccountButton />
+              Dashboard
+            </NavLink>
+            <NavLink
+              to="/history"
+              className={({ isActive }) =>
+                `hidden h-9 items-center rounded-[6px] px-3 text-sm font-medium sm:inline-flex ${
+                  isActive ? 'text-ink' : 'text-ink-soft hover:bg-mist hover:text-ink'
+                }`
+              }
+            >
+              Past games
+            </NavLink>
+            <AccountMenu />
+          </nav>
         </div>
       </header>
-      <main id="main" className={`mx-auto w-full flex-1 px-4 pt-4 pb-16 sm:px-6 ${wide ? 'max-w-5xl' : 'max-w-xl'}`}>
+      <main id="main" className={`relative z-10 mx-auto w-full flex-1 px-4 pt-8 pb-20 sm:px-6 sm:pt-12 ${wide ? 'max-w-6xl' : 'max-w-[34rem]'}`}>
         {children}
       </main>
     </div>

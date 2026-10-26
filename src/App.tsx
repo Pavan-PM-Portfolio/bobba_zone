@@ -5,9 +5,12 @@ import { isConfigured } from './lib/supabase';
 import { ToastProvider } from './components/ui/Toast';
 import { FullPageLoader } from './components/ui/Spinner';
 import { Shell } from './components/ui/Shell';
-import Welcome from './pages/Welcome';
+import { buttonClass } from './components/ui/Button';
 
 const Login = lazy(() => import('./pages/Login'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const NewGame = lazy(() => import('./pages/NewGame'));
+const Play = lazy(() => import('./pages/Play'));
 const CreateGame = lazy(() => import('./pages/CreateGame'));
 const JoinGame = lazy(() => import('./pages/JoinGame'));
 const Room = lazy(() => import('./pages/Room'));
@@ -36,9 +39,9 @@ function SignedInRedirect() {
 function NotFound() {
   return (
     <Shell>
-      <div className="pt-10 text-center">
-        <h1 className="font-display text-4xl">Page not found</h1>
-        <Link to="/" className="mt-6 inline-flex h-12 items-center rounded-full bg-ink px-7 font-semibold text-paper">
+      <div className="pt-6">
+        <h1 className="text-[1.75rem] font-semibold tracking-[-0.025em]">Page not found</h1>
+        <Link to="/" className={buttonClass('primary', 'md', 'mt-6')}>
           Back to home
         </Link>
       </div>
@@ -49,7 +52,7 @@ function NotFound() {
 function SetupNeeded() {
   return (
     <Shell>
-      <h1 className="font-display text-3xl">Almost there</h1>
+      <h1 className="text-[1.75rem] font-semibold tracking-[-0.025em]">Almost there</h1>
       <p className="mt-3 text-ink-soft">
         This build has no Supabase connection. Set <code>VITE_SUPABASE_URL</code> and{' '}
         <code>VITE_SUPABASE_PUBLISHABLE_KEY</code> (see README), then rebuild.
@@ -61,7 +64,9 @@ function SetupNeeded() {
 // Hash routing keeps deep links (invites) working on GitHub Pages subpaths
 // with no server-side rewrites: /bobba_zone/#/join/ABCD2345
 const router = createHashRouter([
-  { path: '/', element: <Welcome /> },
+  { path: '/', element: <Authed><Dashboard /></Authed> },
+  { path: '/new/:game', element: <Authed><NewGame /></Authed> },
+  { path: '/play/:sessionId', element: <Authed><Play /></Authed> },
   { path: '/login', element: <Authed><SignedInRedirect /></Authed> },
   { path: '/create', element: <Authed><CreateGame /></Authed> },
   { path: '/join', element: <Authed><JoinGame /></Authed> },

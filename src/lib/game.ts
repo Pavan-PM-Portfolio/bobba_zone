@@ -72,8 +72,8 @@ export function roundPercent(r: RoundBreakdown): number | null {
 }
 
 /**
- * Friendly copy for a reveal. Deliberately never frames either partner as
- * "winning" and never treats an answer as a verdict on the relationship.
+ * Neutral copy for a reveal. Never frames either partner as "winning" and
+ * never treats an answer as a verdict on the relationship.
  */
 export function revealInterpretation(
   answers: RevealedAnswers,
@@ -85,28 +85,18 @@ export function revealInterpretation(
   const pick = (list: string[]) => list[Math.abs(seed) % list.length]!;
   if (p1 === p2) {
     const who = names[p1];
-    return pick([
-      `You both see ${who} this way. Same page, same picture.`,
-      `Total agreement: it's ${who}. You know each other well here.`,
-      `Two votes for ${who}. Looks like this one is no mystery.`,
-    ]);
+    return pick([`You both see ${who} this way.`, `You both chose ${who}.`, `Same answer from both of you: ${who}.`]);
   }
   if (p1 === 1 && p2 === 2) {
-    return pick([
-      `You each picked yourselves. Maybe you both quietly do this.`,
-      `You both raised your own hand. Sounds like a shared trait.`,
-    ]);
+    return pick(['You each picked yourself. Maybe it is something you both do.', 'You each raised your own hand on this one.']);
   }
-  return pick([
-    `You each picked the other. Generous of you both, so who's right?`,
-    `You each pointed at your partner. Worth a friendly debate.`,
-  ]);
+  return pick(['You each picked the other. Worth comparing notes.', 'You each pointed at your partner. This might be worth talking about.']);
 }
 
 export function finalMessage(pct: number, answered: number): string {
-  if (answered === 0) return 'You skipped everything this time, and that is allowed. Try a round that feels right.';
-  if (pct >= 80) return 'You see each other in remarkably similar ways. Enjoy that.';
-  if (pct >= 55) return 'Plenty of shared views, with a few surprises worth talking about.';
-  if (pct >= 30) return 'Lots of different perspectives. That makes for great conversations.';
-  return 'You see these moments very differently, which gives you plenty to learn about each other.';
+  if (answered === 0) return 'Every question was skipped, so there is no score this time.';
+  if (pct >= 80) return 'You see each other in very similar ways.';
+  if (pct >= 55) return 'Mostly on the same page, with a few surprises worth talking about.';
+  if (pct >= 30) return 'Plenty of different views. Good material for a conversation.';
+  return 'You see these moments quite differently, which is worth exploring together.';
 }

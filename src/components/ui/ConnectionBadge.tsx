@@ -1,21 +1,17 @@
 import type { Connection } from '../../hooks/useRoom';
 
 const copy: Record<Connection, { label: string; dot: string }> = {
-  connecting: { label: 'Connecting', dot: 'bg-ink-mute/50 animate-pulse' },
+  connecting: { label: 'Connecting', dot: 'bg-ink-mute animate-pulse-soft' },
   live: { label: 'Live', dot: 'bg-success' },
-  reconnecting: { label: 'Reconnecting', dot: 'bg-[#d8a23a] animate-pulse' },
+  reconnecting: { label: 'Reconnecting', dot: 'bg-[#c98a1a] animate-pulse-soft' },
   offline: { label: 'Offline', dot: 'bg-danger' },
 };
 
 export function ConnectionBadge({ connection }: { connection: Connection }) {
   const c = copy[connection];
   return (
-    <span
-      className="inline-flex h-8 items-center gap-2 rounded-full bg-white px-3 text-[0.8rem] font-semibold text-ink-soft ring-1 ring-line"
-      role="status"
-      aria-live="polite"
-    >
-      <span className={`size-2 rounded-full ${c.dot}`} aria-hidden="true" />
+    <span className="inline-flex h-7 items-center gap-1.5 rounded-[4px] px-2.5 text-xs font-medium text-ink-soft shadow-hairline" role="status" aria-live="polite">
+      <span className={`size-1.5 rounded-full ${c.dot}`} aria-hidden="true" />
       {c.label}
     </span>
   );

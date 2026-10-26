@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { RotateCcw } from 'lucide-react';
-import { Button } from '../ui/Button';
+import { Button, buttonClass } from '../ui/Button';
 import { Confetti } from '../ui/Celebrate';
 import { FullPageLoader } from '../ui/Spinner';
 import { useToast } from '../ui/Toast';
+import { SaveMoment } from '../session/Parts';
 import { api } from '../../lib/api';
 import { toAppError } from '../../lib/errors';
 import type { CompletedResults, GameState, PlayerNumber } from '../../lib/types';
@@ -37,25 +38,26 @@ export function ResultsView({ state }: { state: GameState }) {
   }
 
   if (!state.results) return <FullPageLoader label="Adding up your answers" />;
+  const pct = Math.round(Number(state.results.agreement_percentage));
 
   return (
     <div className="space-y-8">
       <Confetti fire />
       <div>
-        <h1 className="font-display text-4xl text-balance">{state.room.couple_name ? `${state.room.couple_name}, you did it` : 'Your results'}</h1>
-        <p className="mt-2 text-ink-soft">{state.room.question_count} questions played together.</p>
+        <h1 className="text-[1.75rem] font-semibold tracking-[-0.025em]">{state.room.couple_name || 'Your results'}</h1>
+        <p className="mt-1.5 text-ink-soft">{state.room.question_count} questions, played together.</p>
       </div>
       <ResultsSummary results={state.results} names={names} questions={details?.questions ?? null} />
-      <div className="space-y-3">
+      <div className="flex flex-col gap-2.5 sm:flex-row">
         <Button size="lg" block loading={busy} onClick={playAgain} icon={<RotateCcw className="size-4" aria-hidden="true" />}>
           {state.room.next_room_id ? 'Join the next game' : 'Play again'}
         </Button>
-        <Link
-          to={`/history/${state.room.id}`}
-          className="flex h-12 items-center justify-center rounded-full font-semibold text-ink-soft hover:bg-ink/5 hover:text-ink"
-        >
+        <Link to={`/history/${state.room.id}`} className={buttonClass('secondary', 'lg', 'w-full')}>
           See every answer
         </Link>
+      </div>
+      <div>
+        <SaveMoment game="likely" roomId={state.room.id} defaultTitle={`Who Is More Likely: ${pct}% agreement`} />
       </div>
     </div>
   );

@@ -1,6 +1,19 @@
-# Who's More Likely? - Couples Edition
+# Between Us
 
-A private, real-time, two-player game for couples. Both partners answer the same "who is more likely to..." question on their own phones, in secret. When both have locked in, the answers are revealed on both screens at the same moment.
+A private app of ten real-time games for two partners, each played on your own phone. Answers stay hidden until the game's reveal rule is met, and everything you finish is kept in a shared history with saved moments.
+
+| # | Game | Format |
+|---|---|---|
+| 1 | Who Is More Likely To? | Simultaneous answers, reveal, optional explanations |
+| 2 | How Well Do You Know Me? | Alternate: one answers, one predicts |
+| 3 | Our Love Story | Independent memories, shared timeline |
+| 4 | After Hours | Agreed comfort level, consent-gated reveal |
+| 5 | Future Together | Choices plus Important / Flexible / Still figuring out |
+| 6 | Trust & Boundaries | Scenarios with talk-it-through prompts |
+| 7 | Conflict Simulator | Responses, perceived needs, reflection prompts |
+| 8 | Romance Quest | Challenge journey filtered by budget and time |
+| 9 | The Couple's Mystery | Private clue cards (server-held), shared board, validated answers |
+| 10 | Story Roulette for Two | Turn-based choices, typeset story |
 
 - **Frontend:** React 19 + TypeScript (strict) + Vite + Tailwind CSS v4 + Lucide icons
 - **Backend:** Supabase - Postgres, email/password Auth (admin-created accounts), Realtime private channels, RLS
@@ -12,6 +25,11 @@ Live site: `https://pavan-pm-portfolio.github.io/bobba_zone/`
 ---
 
 ## How it works
+
+### Session engine (games 2-10)
+
+Games 2-10 share one server layer. Each player's answers are *entries* whose key prefix sets who can see them: `pub:` both immediately, `seal:` only after both players have answered, `gated:` only after both answered **and** both consented (`ok:`). Sealed entries are immutable. Shared progress (current step, turns, quest status) is a JSON state updated with compare-and-set, so simultaneous "Next" presses move the game once. Mystery clues, answers and endings live only in the database and are served per player.
+
 
 | Concern | Where it lives |
 | --- | --- |
@@ -31,6 +49,9 @@ supabase/migrations/
   20261026000200_game_functions.sql         all game RPCs + helpers
   20261026000300_realtime_authorization.sql private-channel policies
   20261026000400_seed_questions.sql         60 questions (4 rounds x 15)
+  20261027000600_sessions.sql               generic sessions for games 2-10: sealed/gated entries, shared state, moments, mystery RPCs
+  20261027000700_mystery_cases.sql          two original mysteries (clues split between players)
+  20261027000800_room_notes.sql             explanations after a reveal (game 1)
   20261027000500_require_signed_in_accounts.sql  RPCs refuse anonymous sessions
 src/
   lib/        supabase client, typed API layer, auth provider, errors, pure game logic
@@ -90,7 +111,7 @@ Questions are rows in `public.questions` (`slug` is the stable id, `category`, `
 npm install
 cp .env.example .env.local     # fill in URL + publishable key
 npm run dev                     # http://localhost:5173
-npm test                        # 52 tests: database security + unit
+npm test                        # 77 tests: database security + unit
 npm run build                   # typecheck + production build
 ```
 
@@ -162,7 +183,7 @@ Use two devices, or two browser profiles.
 
 ## 6. Deployment checklist
 
-- [ ] Migrations 100-500 applied (`supabase db push`) - `select count(*) from public.questions` returns 60
+- [ ] Migrations 100-800 applied (`supabase db push`) - `select count(*) from public.questions` returns 60
 - [ ] Email login on, public sign-up off, anonymous off
 - [ ] Player accounts created (Auto Confirm)
 - [ ] Site URL / redirect URLs set

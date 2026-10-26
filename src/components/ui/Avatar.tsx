@@ -1,10 +1,10 @@
 import { initials } from '../../lib/game';
 import type { PlayerNumber } from '../../lib/types';
 
-/** Player 1 is always rose, player 2 always lavender - consistent everywhere. */
-export const seatTone: Record<PlayerNumber, { bg: string; text: string; ring: string; soft: string }> = {
-  1: { bg: 'bg-blush', text: 'text-rose-deep', ring: 'ring-rose', soft: 'bg-blush-soft' },
-  2: { bg: 'bg-lavender', text: 'text-lilac-deep', ring: 'ring-lilac', soft: 'bg-lavender-soft' },
+/** Seat 1 is always rose, seat 2 always violet - consistent everywhere. */
+export const seatTone: Record<PlayerNumber, { bg: string; text: string; ring: string; soft: string; dot: string }> = {
+  1: { bg: 'bg-blush', text: 'text-rose-deep', ring: 'ring-rose', soft: 'bg-blush-soft', dot: 'bg-rose' },
+  2: { bg: 'bg-lavender', text: 'text-lilac-deep', ring: 'ring-lilac', soft: 'bg-lavender-soft', dot: 'bg-lilac' },
 };
 
 export function Avatar({
@@ -16,25 +16,30 @@ export function Avatar({
 }: {
   name: string | null;
   seat: PlayerNumber;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   online?: boolean;
   className?: string;
 }) {
-  const dims = size === 'lg' ? 'size-18 text-2xl' : size === 'sm' ? 'size-8 text-xs' : 'size-12 text-base';
+  const dims = {
+    xs: 'size-5 text-[0.6rem]',
+    sm: 'size-7 text-[0.7rem]',
+    md: 'size-10 text-sm',
+    lg: 'size-12 text-base',
+  }[size];
   const tone = seatTone[seat];
   return (
     <span className={`relative inline-grid shrink-0 place-items-center ${className}`}>
       <span
-        className={`${dims} grid place-items-center rounded-full font-display ${
-          name ? `${tone.bg} ${tone.text}` : 'border-2 border-dashed border-line bg-white text-ink-mute'
+        className={`${dims} grid place-items-center rounded-full font-semibold tracking-tight ${
+          name ? `${tone.bg} ${tone.text}` : 'bg-shell text-ink-mute shadow-[inset_0_0_0_1px_var(--color-line-strong)]'
         }`}
         aria-hidden="true"
       >
-        {name ? initials(name) : '?'}
+        {name ? initials(name) : ''}
       </span>
       {online !== undefined && name && (
         <span
-          className={`absolute -right-0.5 -bottom-0.5 size-3.5 rounded-full ring-2 ring-white ${online ? 'bg-success' : 'bg-ink-mute/40'}`}
+          className={`absolute -right-px -bottom-px size-3 rounded-full ring-2 ring-white ${online ? 'bg-success' : 'bg-line-strong'}`}
           aria-hidden="true"
         />
       )}

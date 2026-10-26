@@ -2,21 +2,22 @@ import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { Spinner } from './Spinner';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
-type Size = 'md' | 'lg';
+type Size = 'sm' | 'md' | 'lg';
 
 const base =
-  'inline-flex items-center justify-center gap-2 font-semibold rounded-full transition-[background,color,box-shadow,transform] duration-150 select-none disabled:cursor-not-allowed disabled:opacity-45 active:scale-[0.98]';
+  'inline-flex items-center justify-center gap-2 font-semibold rounded-[6px] transition-[background-color,color,box-shadow] duration-150 select-none disabled:cursor-not-allowed disabled:opacity-40';
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-ink text-paper shadow-lift hover:bg-[#2a3060]',
-  secondary: 'bg-white text-ink ring-1 ring-line hover:ring-ink/30 shadow-[0_1px_2px_rgb(28_33_71/0.05)]',
-  ghost: 'text-ink-soft hover:text-ink hover:bg-ink/5',
-  danger: 'bg-danger text-white hover:bg-[#9b2b40]',
+  primary: 'bg-accent text-white shadow-button hover:bg-accent-deep active:bg-accent-deep',
+  secondary: 'bg-white text-ink shadow-[0_0_0_1px_var(--color-line-strong)] hover:bg-mist active:bg-line/60',
+  ghost: 'text-ink-soft hover:text-ink hover:bg-mist',
+  danger: 'bg-danger text-white shadow-button hover:bg-[#9a2741]',
 };
 
 const sizes: Record<Size, string> = {
-  md: 'h-11 px-5 text-[0.95rem]',
-  lg: 'h-14 px-7 text-base',
+  sm: 'h-9 px-3.5 text-sm',
+  md: 'h-10 px-4 text-[0.93rem]',
+  lg: 'h-11 px-5 text-[0.95rem]',
 };
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -44,3 +45,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     </button>
   );
 });
+
+/** Link styled as a button (react-router Link or plain anchor via `as`). */
+export const buttonClass = (variant: Variant = 'primary', size: Size = 'md', extra = '') =>
+  `${base} ${variants[variant]} ${sizes[size]} ${extra}`;

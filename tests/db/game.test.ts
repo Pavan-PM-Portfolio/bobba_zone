@@ -681,3 +681,20 @@ describe('expiry, history and deletion', () => {
     expect((await db.rpc(partner, 'get_game_state', { p_room_id: roomId })).room.status).toBe('cancelled');
   });
 });
+
+describe('explanations after a reveal', () => {
+  it('can only be added once revealed, and only by players', async () => {
+    const { host, partner, roomId } = await setupPair({ start: true });
+    const q = await current(host, roomId);
+    await db.rpc(host, 'submit_answer', { p_room_id: roomId, p_game_question_id: q.id, p_selected_player_number: 1 });
+    await expectError(db.rpc(host, 'add_room_note', { p_room_id: roomId, p_game_question_id: q.id, p_text: 'because' }), 'question_not_revealed');
+    await db.rpc(partner, 'submit_answer', { p_room_id: roomId, p_game_question_id: q.id, p_selected_player_number: 2 });
+    await db.rpc(host, 'add_room_note', { p_room_id: roomId, p_game_question_id: q.id, p_text: 'You planned my birthday!' });
+    expect(await db.rpc(partner, 'get_room_notes', { p_room_id: roomId })).toEqual([
+      { question_index: 0, player_number: 1, text: 'You planned my birthday!' },
+    ]);
+    const o = await db.newUser();
+    await expectError(db.rpc(o, 'get_room_notes', { p_room_id: roomId }), 'room_not_found');
+    await expectError(db.sqlAs(o, 'select * from public.room_notes'), 'permission denied');
+  });
+});

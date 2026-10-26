@@ -1,5 +1,11 @@
 import type { HTMLAttributes } from 'react';
 
-export function Card({ className = '', ...rest }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={`rounded-[28px] bg-white/90 ring-1 ring-line shadow-lift backdrop-blur-sm ${className}`} {...rest} />;
+/** Surfaces: `flat` sits on the page with a hairline; `raised` floats above it. */
+export function Card({ className = '', raised, ...rest }: HTMLAttributes<HTMLDivElement> & { raised?: boolean }) {
+  return (
+    <div
+      className={`rounded-[10px] bg-white ${raised ? 'shadow-float' : 'shadow-hairline'} ${className}`}
+      {...rest}
+    />
+  );
 }

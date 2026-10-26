@@ -1,0 +1,58 @@
+export interface TrustScenario {
+  id: string;
+  theme: 'Space' | 'Communication' | 'Privacy' | 'Friendships' | 'Social life' | 'Commitments';
+  text: string;
+  options: string[];
+  talk: [string, string];
+}
+
+export const TRUST_SCENARIOS: TrustScenario[] = [
+  { id: 'quiet-evening', theme: 'Space', text: 'A partner needs a quiet evening alone after a stressful day. How would you respond?',
+    options: ['Give them the evening and check in tomorrow', 'Offer company but let them decide', 'Do something kind quietly, like dinner, then give space', 'Ask what kind of quiet they need'],
+    talk: ['How do you each signal that you need space?', 'What makes space feel caring rather than distant?'] },
+  { id: 'uncomfortable-event', theme: 'Social life', text: 'A social situation makes one partner uncomfortable. How should the couple approach it?',
+    options: ['Leave early together, no questions', 'Agree on a signal beforehand', 'Talk about it afterwards, calmly', 'The comfortable partner stays close all evening'],
+    talk: ['Is there a situation like this coming up?', 'What would a good signal between you be?'] },
+  { id: 'busy-day', theme: 'Communication', text: 'One partner wants more frequent messages during a busy day. How should expectations be discussed?',
+    options: ['Agree on one or two check-ins a day', 'A quick message when either is free', 'No expectations on workdays, catch up in the evening', 'Talk about what the messages mean to each person'],
+    talk: ['What does a message during the day mean to each of you?', 'Has this ever caused a misunderstanding?'] },
+  { id: 'friend-comment', theme: 'Friendships', text: 'A friend makes a comment that feels disrespectful to the relationship. What would you do?',
+    options: ['Address it with the friend directly', 'Tell my partner, then decide together', 'Let it go once, speak up if it repeats', 'Raise it lightly in the moment'],
+    talk: ['Which comments would bother each of you most?', 'How would you want your partner to respond on your behalf?'] },
+  { id: 'passwords', theme: 'Privacy', text: 'Two partners have different views about sharing passwords or private messages. How should they approach the difference?',
+    options: ['Agree on what is shared and what stays private', 'Share only what is needed for emergencies', 'Keep everything private, trust is the default', 'Share everything if it makes one partner feel secure'],
+    talk: ['What feels private to each of you, and why?', 'Is there anything you would like to share more of?'] },
+  { id: 'ex-contact', theme: 'Friendships', text: 'An old friend from before the relationship gets back in touch. How would you handle it?',
+    options: ['Mention it straight away', 'Mention it if it becomes a regular thing', 'Invite my partner to meet them', 'Ask my partner how they feel about it'],
+    talk: ['What helps each of you feel informed without feeling checked on?', 'Are there friendships you would like your partner to know better?'] },
+  { id: 'plans-cancelled', theme: 'Commitments', text: 'One partner cancels shared plans at the last minute for work. What is the best way through it?',
+    options: ['Reschedule straight away', 'Acknowledge the disappointment first', 'Make it up with something special', 'Talk about how often it is happening'],
+    talk: ['Which plans are hardest for each of you to have cancelled?', 'What makes a cancellation feel okay?'] },
+  { id: 'phone-dinner', theme: 'Communication', text: 'One partner keeps checking their phone during dinner. How would you raise it?',
+    options: ['Mention it gently in the moment', 'Bring it up later, privately', 'Suggest a phones-away rule for meals', 'Let it go unless it keeps happening'],
+    talk: ['When does phone use feel fine, and when does it feel distant?', 'Would a simple rule help, or feel restrictive?'] },
+  { id: 'big-decision', theme: 'Commitments', text: 'One partner makes a decision affecting both of you without asking first. What should happen next?',
+    options: ['Talk about it calmly once the surprise passes', 'Agree which decisions need a joint conversation', 'Reverse it if possible, then decide together', 'Understand why first, then share how it felt'],
+    talk: ['Which kinds of decisions should always be joint?', 'What would make it easy to check in first?'] },
+  { id: 'night-out', theme: 'Social life', text: 'One partner is out late with friends. What feels right?',
+    options: ['A quick message if plans change', 'A message when heading home', 'No need to check in at all', 'Share location for the evening'],
+    talk: ['Has a late night ever left either of you worried?', 'What makes a night out feel relaxed for both?'] },
+  { id: 'venting', theme: 'Privacy', text: 'One partner talks to a close friend about a disagreement you had. How do you feel about it?',
+    options: ['Fine, everyone needs someone to talk to', 'Fine, as long as private details stay private', 'I would rather they came to me first', 'It depends on the friend'],
+    talk: ['Who do each of you turn to when things are hard?', 'What should stay between the two of you?'] },
+  { id: 'jealousy', theme: 'Friendships', text: 'One partner feels left out when the other spends a lot of time with a new friend. What helps?',
+    options: ['Say it openly and early', 'Introduce the new friend', 'Plan dedicated time together', 'Reassure without changing anything'],
+    talk: ['How do you each like to be reassured?', 'Is there a friendship either of you would like to make more room for?'] },
+  { id: 'apology-public', theme: 'Social life', text: 'A partner makes a joke at the other’s expense in front of friends. What should happen?',
+    options: ['Laugh it off, talk later', 'A quiet word during the evening', 'An apology afterwards', 'Agree which topics are off-limits for jokes'],
+    talk: ['Which topics are off-limits for jokes, for each of you?', 'How would you like a moment like this handled?'] },
+  { id: 'family-request', theme: 'Commitments', text: 'Family asks one partner for something that affects both of you. How should it be handled?',
+    options: ['Talk it through together before answering', 'The partner whose family it is decides', 'Say yes, then work it out together', 'Set a shared rule for requests like this'],
+    talk: ['Where do your families’ expectations differ?', 'What boundary would help you both feel comfortable?'] },
+  { id: 'quiet-mood', theme: 'Communication', text: 'One partner seems quiet and distant for a few days. What do you do?',
+    options: ['Ask directly and gently', 'Give it time, they will talk when ready', 'Do something kind and wait', 'Name it: "I have noticed you seem far away"'],
+    talk: ['What should the other person do when you go quiet?', 'How do you each show you are not okay?'] },
+  { id: 'shared-space', theme: 'Space', text: 'You live together and one partner wants a room or corner that is just theirs. How do you respond?',
+    options: ['Of course, let us make it happen', 'Yes, and I would like one too', 'Let us find a time-based version instead', 'I would want to understand why first'],
+    talk: ['What does personal space at home mean to each of you?', 'Is there a small change that would help now?'] },
+];

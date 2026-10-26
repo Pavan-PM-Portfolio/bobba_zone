@@ -41,14 +41,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             <div
               key={t.id}
               role={t.tone === 'error' ? 'alert' : 'status'}
-              className="pointer-events-auto flex w-full max-w-md animate-rise items-start gap-3 rounded-2xl bg-ink px-4 py-3 text-[0.95rem] text-paper shadow-float"
+              className="pointer-events-auto flex w-full max-w-sm animate-rise items-start gap-3 rounded-[10px] bg-ink px-4 py-3 text-sm text-white shadow-float"
             >
               <I
-                className={`mt-0.5 size-5 shrink-0 ${t.tone === 'error' ? 'text-blush' : t.tone === 'success' ? 'text-[#9fe0c0]' : 'text-lavender'}`}
+                className={`mt-px size-4.5 shrink-0 ${t.tone === 'error' ? 'text-[#ff9db0]' : t.tone === 'success' ? 'text-[#8be0b8]' : 'text-[#c3b9ff]'}`}
                 aria-hidden="true"
               />
               <p className="flex-1">{t.message}</p>
-              <button onClick={() => dismiss(t.id)} className="rounded-full p-0.5 text-paper/70 hover:text-paper" aria-label="Dismiss">
+              <button onClick={() => dismiss(t.id)} className="rounded-md p-0.5 text-white/60 hover:text-white" aria-label="Dismiss">
                 <X className="size-4" />
               </button>
             </div>
