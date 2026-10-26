@@ -77,10 +77,19 @@ function readSettings(view: SessionView) {
   return {
     style,
     only,
-    rounds: Math.min(40, Math.max(4, Number(raw.rounds ?? 15) || 15)),
-    perStage: Math.min(12, Math.max(3, Number(raw.perStage ?? 6) || 6)),
+    /** No rounds setting (or the players chose "keep going") means play until the questions run out. */
+    rounds: raw.rounds == null || raw.rounds === 'all' || view.session.state.unlimited ? Infinity : Math.min(500, Math.max(4, Number(raw.rounds) || 15)),
+    perStage: Math.min(20, Math.max(3, Number(raw.perStage ?? 10) || 10)),
   };
 }
+
+/** Place a question id at a step index without shifting or dropping earlier ones. */
+const withAt = (qs: string[], i: number, id: string) => {
+  const next = qs.slice(0, i);
+  while (next.length < i) next.push('');
+  next[i] = id;
+  return next;
+};
 
 const skip = (s: SessionApi, step: number) =>
   s.patch((raw) => {
@@ -158,7 +167,7 @@ function StepFlow({ view, s, terms }: ModeProps) {
       if (now.step !== st.step || now.qs[now.step]) return null;
       const sd = `${view.session.id}:${now.step}`;
       const q = vault ? drawVault(agreed, now.stage, now.qs, sd) : drawVelvet(pool, now.qs, sd);
-      return q ? { qs: [...now.qs.slice(0, now.step), q.id] } : null;
+      return q ? { qs: withAt(now.qs, now.step, q.id) } : null;
     });
   }, [roulette, vault, current, atGate, finished, exhausted, pool, agreed, s, st.step, view.session.id]);
 
@@ -166,17 +175,23 @@ function StepFlow({ view, s, terms }: ModeProps) {
     if (outOfBounds) void skip(s, st.step);
   }, [outOfBounds, s, st.step]);
 
-  if (finished) return <FinishButton s={s} note={exhausted ? 'That is every question your shared categories allow for now. Widen them in Boundaries, or see your results.' : undefined} />;
+  if (finished) {
+    return exhausted ? (
+      <FinishButton s={s} note="That is every question in the categories you both chose. Widen them in Boundaries for more, or see your results." />
+    ) : (
+      <KeepGoing s={s} answered={st.step} remaining={pool.filter((q) => !st.qs.includes(q.id)).length} />
+    );
+  }
   if (atGate) return <VaultGate view={view} s={s} agreed={agreed} st={st} />;
 
-  const total = vault ? perStage : rounds;
+  const remaining = pool.filter((q) => !st.qs.includes(q.id)).length;
+  const total = vault ? perStage : Math.min(rounds, st.step + (current ? 1 : 0) + remaining);
   const index = vault ? st.step - st.stageStart : st.step;
   const label = vault ? `The Velvet Vault, stage ${st.stage}: ${VAULT_STAGES[st.stage - 1]?.title}` : roulette ? 'Desire Roulette' : only ? catTitle(only) : 'VELVET';
   const last = index + 1 >= total;
-  const nextLabel = last ? (vault ? 'Finish this stage' : 'See your results') : roulette ? 'Spin again' : 'Next';
+  const nextLabel = last ? (vault ? 'Finish this stage' : 'Continue') : roulette ? 'Spin again' : 'Next';
   const onNext = async () => {
     await advance(s, st.step);
-    if (last && !vault) await s.complete();
   };
 
   const round = current && !outOfBounds && (
@@ -195,6 +210,25 @@ function StepFlow({ view, s, terms }: ModeProps) {
     <div className="space-y-6">
       {vault && <VaultBar s={s} st={st} />}
       {round || <Waiting>Choosing the next question</Waiting>}
+    </div>
+  );
+}
+
+function KeepGoing({ s, answered, remaining }: { s: SessionApi; answered: number; remaining: number }) {
+  const { busy, run } = useBusy();
+  return (
+    <div className="space-y-4 rounded-[14px] bg-white p-6 text-center shadow-lift">
+      <p className="text-sm font-medium text-accent">Set complete</p>
+      <h2 className="text-[1.4rem] font-semibold tracking-[-0.02em]">You answered {answered} together.</h2>
+      <p className="text-ink-soft">{remaining} more {remaining === 1 ? 'question is' : 'questions are'} waiting in the categories you both chose.</p>
+      <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+        <Button size="lg" loading={busy === 'more'} onClick={() => run('more', () => s.patch((raw) => (raw.unlimited ? null : { unlimited: true })))}>
+          Keep going
+        </Button>
+        <Button size="lg" variant="secondary" loading={busy === 'c'} onClick={() => run('c', () => s.complete())}>
+          See your results
+        </Button>
+      </div>
     </div>
   );
 }
@@ -264,7 +298,7 @@ function Roulette({ view, s, agreed, st, progress, children }: { view: SessionVi
       const cat = avail[Math.floor(Math.random() * avail.length)]!;
       const q = drawVelvet(velvetPool(agreed, [cat]), now.qs, `${view.session.id}:${now.step}`);
       if (!q) return null;
-      return { spins: { ...now.spins, [String(now.step)]: cat }, qs: [...now.qs.slice(0, now.step), q.id] };
+      return { spins: { ...now.spins, [String(now.step)]: cat }, qs: withAt(now.qs, now.step, q.id) };
     });
   }
 

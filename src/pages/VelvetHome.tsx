@@ -29,6 +29,7 @@ export default function VelvetHome() {
   const [data, setData] = useState<Dashboard | null>(null);
   const [error, setError] = useState<AppError | null>(null);
   const [starting, setStarting] = useState<string | null>(null);
+  const [length, setLength] = useState<'all' | 15 | 30>('all');
 
   const load = useCallback(() => {
     api.dashboard().then(setData).catch((e) => setError(toAppError(e)));
@@ -39,7 +40,7 @@ export default function VelvetHome() {
     setStarting(tag);
     try {
       const name = rememberedName() || accountName || 'Player';
-      const r = await api.createSession('velvet', name, { mode: 'velvet', rounds: 15, perStage: 6, ...settings }, title);
+      const r = await api.createSession('velvet', name, { mode: 'velvet', perStage: 10, ...settings, ...(length === 'all' ? {} : { rounds: length }) }, title);
       navigate(`/play/${r.session_id}`);
     } catch (e) {
       toast(toAppError(e).message, 'error');
@@ -77,6 +78,21 @@ export default function VelvetHome() {
             </Button>
           )}
         </div>
+        <div className="flex flex-wrap items-center gap-2 border-t border-line px-6 py-3.5 sm:px-10">
+          <span className="mr-1 text-sm text-ink-soft">Game length</span>
+          {(
+            [
+              ['all', 'Every question'],
+              [15, '15 questions'],
+              [30, '30 questions'],
+            ] as const
+          ).map(([v, label]) => (
+            <button key={String(v)} type="button" aria-pressed={length === v} onClick={() => setLength(v)} className={`rounded-[6px] px-3 py-1.5 text-sm font-medium ${length === v ? 'bg-accent text-white' : 'bg-mist text-ink-soft hover:bg-shell'}`}>
+              {label}
+            </button>
+          ))}
+          <span className="text-xs text-ink-mute">You can always end early, or keep going after a set.</span>
+        </div>
         <div className="grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
           {STYLES.map((o) => (
             <button key={o.id} type="button" disabled={starting !== null} onClick={() => start({ style: o.id }, o.id, o.title)} className="group flex flex-col bg-white p-6 text-left transition-colors hover:bg-paper disabled:opacity-60">
@@ -96,7 +112,7 @@ export default function VelvetHome() {
             const n = VELVET.filter((q) => q.cat === c.id).length;
             return (
               <li key={c.id}>
-                <button type="button" disabled={starting !== null} onClick={() => start({ style: 'categories', only: c.id, rounds: 12 }, `only:${c.id}`, c.title)} className="flex h-full w-full flex-col rounded-[10px] bg-white p-4 text-left shadow-hairline transition-shadow hover:shadow-lift disabled:opacity-60">
+                <button type="button" disabled={starting !== null} onClick={() => start({ style: 'categories', only: c.id }, `only:${c.id}`, c.title)} className="flex h-full w-full flex-col rounded-[10px] bg-white p-4 text-left shadow-hairline transition-shadow hover:shadow-lift disabled:opacity-60">
                   <span className="font-semibold">{c.title}</span>
                   <span className="mt-0.5 flex-1 text-sm text-ink-soft">{c.detail}</span>
                   <span className="mt-3 flex items-center justify-between text-xs">
