@@ -14,7 +14,7 @@ const all = [...TRUTHS, ...DARES, ...DESIRES, ...PICKS.map((p) => ({ ...p, text:
 
 describe('After Dark content library', () => {
   it('has substantial original content for every mode', () => {
-    expect(MODES).toHaveLength(8);
+    expect(MODES).toHaveLength(9);
     expect(TRUTHS.length).toBeGreaterThanOrEqual(48);
     expect(DARES.length).toBeGreaterThanOrEqual(40);
     expect(PICKS.length).toBeGreaterThanOrEqual(40);
@@ -62,7 +62,7 @@ describe('boundaries', () => {
     expect(allowed(TRUTHS[0]!, { ...terms, agreed: false })).toBe(false);
   });
 
-  it('"Our Rules" (level 5) caps content at level 4', () => {
+  it('older card modes cap content at level 4', () => {
     expect(contentCap(5)).toBe(4);
     expect(contentCap(0)).toBe(1);
   });

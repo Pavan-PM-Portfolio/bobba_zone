@@ -3,16 +3,16 @@ export type Category = 'flirty' | 'romantic' | 'compliments' | 'bold' | 'kissing
 export type ContentType = 'questions' | 'challenges' | 'mix';
 
 export const LEVELS: { n: 1 | 2 | 3 | 4 | 5; title: string; detail: string }[] = [
-  { n: 1, title: 'Flirty', detail: 'Teasing, compliments and cheeky questions.' },
-  { n: 2, title: 'Steamy', detail: 'Kisses, anticipation and romantic tension.' },
-  { n: 3, title: 'Hot Seat', detail: 'Bolder questions about attraction and desire.' },
-  { n: 4, title: 'Dare Night', detail: 'Playful dares and romantic challenges.' },
-  { n: 5, title: 'Our Rules', detail: 'Everything up to Dare Night, limited to the categories you both choose.' },
+  { n: 1, title: 'Flirty Curiosity', detail: 'Attraction, teasing, compliments and playful chemistry.' },
+  { n: 2, title: 'Steamy Imagination', detail: 'Romantic tension, kisses and anticipation.' },
+  { n: 3, title: 'Bold Desires', detail: 'Feeling wanted, dynamics and fantasies you are comfortable discussing.' },
+  { n: 4, title: 'Deep Intimacy', detail: 'Vulnerability, trust, communication and boundaries. Also unlocks bolder dares.' },
+  { n: 5, title: 'Our Secret World', detail: 'Imaginative adult scenarios, limited to the categories you both choose.' },
 ];
 
-/** Content intensity used for filtering: "Our Rules" unlocks up to level 4. */
+/** Older card modes top out at level 4; Level 5 unlocks the Question Game's most personal questions. */
 export const contentCap = (level: number): Level => (Math.min(4, Math.max(1, level)) as Level);
-export const levelTitle = (n: number) => LEVELS.find((l) => l.n === n)?.title ?? 'Flirty';
+export const levelTitle = (n: number) => LEVELS.find((l) => l.n === n)?.title ?? 'Flirty Curiosity';
 
 export const CATEGORIES: { id: Category; title: string; detail: string }[] = [
   { id: 'flirty', title: 'Flirty', detail: 'Teasing and banter' },

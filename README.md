@@ -14,7 +14,7 @@ A private app of ten real-time games for two partners, each played on your own p
 | 8 | Romance Quest | Challenge journey filtered by budget and time |
 | 9 | The Couple's Mystery | Private clue cards (server-held), shared board, validated answers |
 | 10 | Story Roulette for Two | Turn-based choices, typeset story |
-| 11 | After Dark (18+) | Eight private modes: Truth or Dare, Pick One, Secret Desires, Heat Ladder, Dare Roulette, Who Knows Whom Better, Fantasy Date Builder, Wildcards |
+| 11 | After Dark (18+) | The Question Game (scenario MCQs, 5 levels, 7 decks, 290 questions) plus eight more modes: Truth or Dare, Pick One, Secret Desires, Heat Ladder, Dare Roulette, Who Knows Whom Better, Fantasy Date Builder, Wildcards |
 
 - **Frontend:** React 19 + TypeScript (strict) + Vite + Tailwind CSS v4 + Lucide icons
 - **Backend:** Supabase - Postgres, email/password Auth (admin-created accounts), Realtime private channels, RLS
@@ -30,6 +30,12 @@ Live site: `https://pavan-pm-portfolio.github.io/bobba_zone/`
 ### After Dark boundaries
 
 Each player's adult confirmation, consent, intensity, categories and content type are stored as their own `priv:setup` entry. `after_dark_terms()` returns only the lower intensity, the intersection of categories and a compatible content type, never either player's raw choices. Every mode filters content through those agreed terms, and either player can lower intensity, change categories, skip or end at any time.
+
+### The Question Game (After Dark)
+
+290 multiple-choice questions in `src/games/after-dark/content/mcq/`: 40 per level for the five levels (Flirty Curiosity, Steamy Imagination, Bold Desires, Deep Intimacy, Our Secret World), plus 30 Cinematic Choice scenes, 30 Read My Mind predictions and 30 Choose Two questions. Each question carries id, deck, level, category, four themed options, `maxPicks` (1, up to 2, or select all), a follow-up, independent or predictive, reveal rule and skip eligibility.
+
+Answers are `seal:q<i>` entries (`{id, picks, note}`), so the server keeps both hidden until both exist. The question for each step is drawn once into shared state (`qs`), so both devices always see the same question. The level starts at 1 and only rises when both players add a `pub:up<level>` entry; it can never exceed the agreed boundaries, and either player can step down. A skip moves both players on and reveals nothing. Follow-ups are chosen from the option a player picked, never inferred.
 
 ### Session engine (games 2-10)
 

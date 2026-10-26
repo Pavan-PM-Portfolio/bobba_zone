@@ -16,6 +16,7 @@ export interface ModeProps extends GameProps {
 }
 
 const MODE_COMPONENTS: Record<ModeId, ComponentType<ModeProps>> = {
+  mcq: lazy(() => import('./modes/QuestionGame')),
   truth_dare: lazy(() => import('./modes/TruthOrDare')),
   pick_one: lazy(() => import('./modes/PickOne')),
   desires: lazy(() => import('./modes/SecretDesires')),
@@ -59,7 +60,7 @@ export default function AfterDark({ view, s }: GameProps) {
           <div className="flex items-center gap-2.5">
             <mode.icon className="size-4.5 text-accent" aria-hidden="true" />
             <span className="font-medium">{mode.title}</span>
-            {terms.agreed && (
+            {terms.agreed && mode.id !== 'mcq' && (
               <span className="rounded-[4px] bg-shell px-1.5 py-0.5 text-xs font-medium text-accent-deep">
                 Level {contentCap(terms.level ?? 1)}, {levelTitle(terms.level ?? 1)}
               </span>

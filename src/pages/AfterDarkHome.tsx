@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, ChevronLeft, LockKeyhole, Star, Trash2 } from 'lucide-react';
+import { Check, ChevronLeft, ListChecks, LockKeyhole, Star, Trash2 } from 'lucide-react';
 import { Shell } from '../components/ui/Shell';
 import { Button } from '../components/ui/Button';
 import { Dialog } from '../components/ui/Dialog';
@@ -8,6 +8,7 @@ import { FullPageLoader } from '../components/ui/Spinner';
 import { useToast } from '../components/ui/Toast';
 import { MODES, modeById, type ModeId } from '../games/after-dark/modes';
 import { CATEGORIES, LEVELS, type Category } from '../games/after-dark/content/taxonomy';
+import { DECKS, type Deck } from '../games/after-dark/content/mcq/types';
 import { loadDefaults, saveDefaults, type Defaults } from '../games/after-dark/prefs';
 import { api } from '../lib/api';
 import { useAuth } from '../lib/auth';
@@ -23,7 +24,9 @@ export default function AfterDarkHome() {
   const [data, setData] = useState<Dashboard | null>(null);
   const [error, setError] = useState<AppError | null>(null);
   const [defaults, setDefaults] = useState<Defaults>(loadDefaults);
-  const [starting, setStarting] = useState<ModeId | null>(null);
+  const [starting, setStarting] = useState<string | null>(null);
+  const [decks, setDecks] = useState<Deck[]>(DECKS.map((d) => d.id));
+  const [rounds, setRounds] = useState(12);
   const [removing, setRemoving] = useState<Moment | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -37,11 +40,11 @@ export default function AfterDarkHome() {
     saveDefaults(d);
   };
 
-  async function start(mode: ModeId) {
-    setStarting(mode);
+  async function start(mode: ModeId, extra: Record<string, unknown> = {}, tag: string = mode) {
+    setStarting(tag);
     try {
       const name = rememberedName() || accountName || 'Player';
-      const r = await api.createSession('after_dark', name, { mode, rounds: mode === 'truth_dare' ? 12 : undefined });
+      const r = await api.createSession('after_dark', name, { mode, rounds: mode === 'truth_dare' ? 12 : undefined, ...extra });
       navigate(`/play/${r.session_id}`);
     } catch (e) {
       toast(toAppError(e).message, 'error');
@@ -133,10 +136,74 @@ export default function AfterDarkHome() {
         </div>
       </section>
 
+      <section className="mt-10 rounded-[14px] bg-white p-6 shadow-lift sm:p-7" aria-labelledby="qgame">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-[30rem]">
+            <span className="grid size-10 place-items-center rounded-[8px] bg-shell text-accent-deep" aria-hidden="true">
+              <ListChecks className="size-5" strokeWidth={1.8} />
+            </span>
+            <h2 id="qgame" className="mt-4 text-[1.35rem] font-semibold tracking-[-0.02em]">The Question Game</h2>
+            <p className="mt-1.5 leading-relaxed text-ink-soft">
+              Scenarios, desires and deep questions, each with four distinct answers. You both choose in private, lock in, and reveal at the same moment. Five levels, and you only go higher when you both say so.
+            </p>
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <Button size="lg" loading={starting === 'mcq'} disabled={starting !== null || decks.length === 0} onClick={() => start('mcq', { decks, rounds })}>
+                Start the Question Game
+              </Button>
+              <label className="flex items-center gap-2 text-sm text-ink-soft">
+                Questions
+                <select value={rounds} onChange={(e) => setRounds(Number(e.target.value))} className="h-9 rounded-[6px] bg-white px-2 text-ink shadow-[0_0_0_1px_var(--color-line-strong)]">
+                  {[8, 12, 20, 30].map((n) => (
+                    <option key={n} value={n}>
+                      {n}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          </div>
+          <div className="lg:w-[26rem]">
+            <p className="mb-2 text-sm font-medium">Decks</p>
+            <ul className="divide-y divide-line rounded-[10px] shadow-[0_0_0_1px_var(--color-line)]">
+              {DECKS.map((d) => {
+                const on = decks.includes(d.id);
+                return (
+                  <li key={d.id} className="flex items-center gap-3 px-3.5 py-2.5">
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={on}
+                      onClick={() => setDecks(on ? decks.filter((x) => x !== d.id) : [...decks, d.id])}
+                      className="flex min-w-0 flex-1 items-start gap-3 text-left"
+                    >
+                      <span className={`mt-0.5 grid size-4.5 shrink-0 place-items-center rounded-[4px] ${on ? 'bg-accent text-white' : 'shadow-[inset_0_0_0_1.5px_var(--color-line-strong)]'}`} aria-hidden="true">
+                        {on && <Check className="size-3" strokeWidth={3} />}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-sm font-medium">{d.title}</span>
+                        <span className="block text-xs text-ink-mute">{d.detail}</span>
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      disabled={starting !== null}
+                      onClick={() => start('mcq', { decks: [d.id], rounds }, `deck:${d.id}`)}
+                      className="shrink-0 text-xs font-semibold text-accent hover:text-accent-deep disabled:opacity-50"
+                    >
+                      {starting === `deck:${d.id}` ? 'Starting...' : 'Play only this'}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      </section>
+
       <section className="mt-10" aria-labelledby="modes">
-        <h2 id="modes" className="text-[1.05rem] font-semibold">Start playing</h2>
+        <h2 id="modes" className="text-[1.05rem] font-semibold">More ways to play</h2>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {MODES.map((m) => (
+          {MODES.filter((m) => m.id !== 'mcq').map((m) => (
             <li key={m.id}>
               <button
                 type="button"
@@ -211,7 +278,7 @@ export default function AfterDarkHome() {
               <dl className="mt-3 grid grid-cols-3 divide-x divide-line rounded-[10px] bg-white shadow-hairline">
                 {[
                   ['Sessions', recent.length],
-                  ['Modes tried', `${modesTried}/8`],
+                  ['Modes tried', `${modesTried}/${MODES.length}`],
                   ['Favourites', favourites.length],
                 ].map(([l, n]) => (
                   <div key={l as string} className="px-4 py-4">
@@ -221,7 +288,7 @@ export default function AfterDarkHome() {
                 ))}
               </dl>
               <div className="mt-2 h-1 rounded-[2px] bg-line" aria-hidden="true">
-                <div className="h-full rounded-[2px] bg-accent" style={{ width: `${(modesTried / 8) * 100}%` }} />
+                <div className="h-full rounded-[2px] bg-accent" style={{ width: `${(modesTried / MODES.length) * 100}%` }} />
               </div>
             </section>
             <section>

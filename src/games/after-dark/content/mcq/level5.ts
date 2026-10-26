@@ -1,0 +1,248 @@
+import { mcq } from './types';
+
+/**
+ * Level 5 - Our Secret World: imaginative adult scenarios and more personal
+ * preferences. Only shown when both partners chose this level. Non-graphic.
+ */
+export const LEVEL5 = [
+  mcq('l5-masquerade', 'fantasy', 5, 'bold', 'You are at a masquerade ball. Across the room, someone in a mask is watching you, and you know it is your partner. What do you do?', [
+    'mystery|Pretend not to know them and let them find me.',
+    'lead|Cross the room and ask them to dance.',
+    'play|Swap masks with a stranger and make them search.',
+    'slow|Hold their gaze until they come to me.',
+  ], 'What would the rest of the night look like?'),
+  mcq('l5-secret-signal', 'fantasy', 5, 'bold', 'You agree on a secret signal that means "let\'s leave this party now". What would it be?', [
+    'mystery|A particular look.',
+    'touch|A squeeze of the hand.',
+    'words|A ridiculous code phrase.',
+    'play|A song request to the DJ.',
+  ], 'Agree on one now.'),
+  mcq('l5-fantasy-setting', 'fantasy', 5, 'desires', 'If you could set a romantic fantasy anywhere, which setting would you choose?', [
+    'adventure|A private villa on a cliff above the sea.',
+    'mystery|A grand old hotel with a story behind every door.',
+    'slow|A snowed-in cabin with a fire.',
+    'play|A city at night, anything could happen.',
+  ], 'What happens in the opening scene?'),
+  mcq('l5-roles', 'fantasy', 5, 'playful', 'For one evening of playful role-play, which story appeals most?', [
+    'mystery|Two strangers meeting on a night train.',
+    'adventure|Spies on a mission who are not supposed to fall for each other.',
+    'slow|Old flames meeting again after many years.',
+    'play|A mischievous story we invent as we go.',
+  ], 'Remember: any role-play can stop at any moment. Who would you play?'),
+  mcq('l5-surrender-control', 'deep', 5, 'desires', 'How do you feel about letting your partner plan a romantic night entirely without your input?', [
+    'follow|I would love it. Surprise me.',
+    'safety|I would love it, with a few agreed limits.',
+    'lead|I would rather plan it myself.',
+    'together|I would like to plan it together, then be surprised by one thing.',
+  ], 'What limits, if any, would you set?'),
+  mcq('l5-secret-list', 'deep', 5, 'desires', 'Would you like to keep a private shared list of romantic things you both want to try?', [
+    'together|Yes, and add to it together.',
+    'mystery|Yes, but reveal items one at a time.',
+    'slow|Maybe, if we take it gently.',
+    'space|I prefer to keep it unwritten.',
+  ], 'What would be the first item?'),
+  mcq('l5-forbidden-feel', 'forbidden', 5, 'bold', 'Which situation feels the most thrillingly "forbidden" while staying completely respectful of each other?', [
+    'mystery|Sneaking away together at a formal event.',
+    'adventure|A late-night swim after the pool has closed.',
+    'words|Whispering things across a crowded dinner table.',
+    'play|Passing secret notes during a long meeting.',
+  ], 'What makes it exciting for you?'),
+  mcq('l5-desire-word', 'deep', 5, 'desires', 'If you had to describe how you like to be desired in one word, which would you choose?', [
+    'slow|Patiently.',
+    'lead|Boldly.',
+    'play|Playfully.',
+    'closeness|Completely.',
+  ], 'Explain your word, if you like.'),
+  mcq('l5-mirror', 'fantasy', 5, 'bold', 'Your partner whispers, "Tell me something you have imagined about us." How would you answer?', [
+    'words|Tell them straight away.',
+    'mystery|Tell them, but only half.',
+    'play|Make them guess.',
+    'space|Ask to tell them another time.',
+  ], 'Any answer is fine. Would you like to share now?'),
+  mcq('l5-hotel-night', 'fantasy', 5, 'bold', 'A surprise hotel night. The door closes behind you both. What sets the tone?', [
+    'slow|A long, unhurried kiss before anything else.',
+    'play|Jumping on the bed and laughing.',
+    'words|Your partner telling you what tonight is about.',
+    'mystery|Something your partner has hidden in the room.',
+  ], 'What would you hide in the room for them?'),
+  mcq('l5-confession', 'forbidden', 5, 'desires', 'If you were to confess a romantic curiosity, how would you want your partner to react?', [
+    'safety|With warmth and no judgement, whatever it is.',
+    'talk|With questions, so I can explain.',
+    'play|With a smile and "tell me more".',
+    'space|With "thank you for telling me", and nothing more yet.',
+  ], 'Curiosity never obliges anything. How do you react to confessions?'),
+  mcq('l5-tempt', 'emotional', 5, 'bold', 'Which is the most tempting way for your partner to invite you to bed early?', [
+    'words|Telling me plainly why.',
+    'mystery|A single look and leaving the room.',
+    'touch|Taking my hand without a word.',
+    'play|A ridiculous excuse we both see through.',
+  ], 'Has this happened before?'),
+  mcq('l5-blindfold-game', 'forbidden', 5, 'playful', 'Your partner suggests a trust game where one of you is blindfolded and guesses things by taste and touch. Your answer?', [
+    'adventure|Yes, let me go first.',
+    'follow|Yes, but you go first.',
+    'safety|Yes, with a word that ends the game instantly.',
+    'space|Not for me, and that is okay.',
+  ], 'What would make it feel fun and safe?'),
+  mcq('l5-fantasy-share-how', 'deep', 5, 'desires', 'How would you like to explore a fantasy you both find interesting?', [
+    'talk|Talk about it for a while first.',
+    'mystery|Write it down for each other.',
+    'slow|Try a small part, then check in.',
+    'together|Plan it together like a special date.',
+  ], 'Is there one you would put on the list?'),
+  mcq('l5-midnight', 'fantasy', 5, 'romantic', 'It is midnight and neither of you can sleep. Your partner turns to you. What do you hope they say?', [
+    'words|"I have been thinking about you all day."',
+    'adventure|"Let\'s go for a drive."',
+    'talk|"Tell me something I don\'t know."',
+    'touch|Nothing. They just reach for you.',
+  ], 'What would you say to them?'),
+  mcq('l5-power-play', 'fantasy', 5, 'bold', 'In a playful power game, which side do you think you would enjoy?', [
+    'lead|Giving the instructions.',
+    'follow|Following them.',
+    'play|Trading roles halfway through.',
+    'space|Neither, I prefer equal footing.',
+  ], 'Any answer is fine. What appeals to you about it?'),
+  mcq('l5-dare-yourself', 'emotional', 5, 'desires', 'What would feel boldest for you to say out loud tonight?', [
+    'words|Exactly what I find irresistible about my partner.',
+    'mystery|A fantasy I have never mentioned.',
+    'talk|Something I want more of.',
+    'safety|Something I want less of.',
+  ], 'You can say it, or simply know it.'),
+  mcq('l5-scent', 'fantasy', 5, 'romantic', 'You walk into a room your partner has prepared. Which detail would affect you most?', [
+    'touch|Silk sheets.',
+    'slow|Candlelight everywhere.',
+    'words|A note on the pillow.',
+    'mystery|Music you have never heard before.',
+  ], 'What would you add for them?'),
+  mcq('l5-overheard', 'forbidden', 5, 'flirty', 'You overhear your partner telling a friend how attracted they are to you. How do you react?', [
+    'play|Walk in and tease them about it.',
+    'mystery|Pretend I did not hear and wait for later.',
+    'words|Tell them later how much it meant.',
+    'closeness|Go straight over and kiss them.',
+  ], 'What would you hope they said?'),
+  mcq('l5-wildest-date', 'fantasy', 5, 'dates', 'What would your wildest, most daring date look like?', [
+    'adventure|A spontaneous flight to somewhere neither of us has been.',
+    'mystery|An entire evening as different people.',
+    'play|Hot air balloon at sunrise, champagne included.',
+    'slow|A private dinner somewhere impossible to book.',
+  ], 'Which part could you actually do?'),
+  mcq('l5-whisper-command', 'emotional', 5, 'bold', 'Which whispered request from your partner would you find hardest to resist?', [
+    'words|"Come here."',
+    'slow|"Don\'t move."',
+    'mystery|"Close your eyes."',
+    'play|"Catch me."',
+  ], 'Would you like to hear it?'),
+  mcq('l5-locked-in', 'fantasy', 5, 'bold', 'You are snowed in together for three days with no internet. What happens on day two?', [
+    'slow|We have not left the bed.',
+    'play|We have invented a game with very particular rules.',
+    'talk|We have talked about things we have never said.',
+    'adventure|We have built something ridiculous in the snow.',
+  ], 'What about day three?'),
+  mcq('l5-secret-world', 'deep', 5, 'desires', 'What would make your private world together feel more exciting?', [
+    'mystery|More secrets only we share.',
+    'surprise|More surprises.',
+    'words|More honest conversations about desire.',
+    'adventure|More new experiences.',
+  ], 'Pick one thing to start this month.'),
+  mcq('l5-mood-starter', 'emotional', 5, 'desires', 'Which first moment most often sets the mood for you?', [
+    'words|Something said with intent.',
+    'touch|A lingering touch.',
+    'mystery|Anticipation built over the day.',
+    'closeness|Feeling emotionally close first.',
+  ], 'Does your partner know this?'),
+  mcq('l5-forbidden-place', 'forbidden', 5, 'kissing', 'Which risky-but-harmless place would you most like to steal a kiss?', [
+    'adventure|At the top of a Ferris wheel.',
+    'mystery|Behind a curtain at a formal party.',
+    'play|In a library aisle.',
+    'slow|On a dark beach after midnight.',
+  ], 'Plan it.'),
+  mcq('l5-anticipation-game', 'fantasy', 5, 'playful', 'You agree on a "no touching until 9pm" game on a date night. How do you play it?', [
+    'words|Say everything I would do instead.',
+    'mystery|Hardly look at them, to build it up.',
+    'play|Try to make them break first.',
+    'slow|Simply enjoy the waiting.',
+  ], 'Who would break first?'),
+  mcq('l5-letter', 'deep', 5, 'desires', 'If you wrote your partner a sealed letter about desire, to open on a special night, what would it be about?', [
+    'words|What I find irresistible about them.',
+    'mystery|Something I have imagined.',
+    'closeness|How loved they make me feel.',
+    'adventure|What I would love us to explore.',
+  ], 'Would you write it?'),
+  mcq('l5-mood-music', 'fantasy', 5, 'romantic', 'The music changes and the mood shifts. What song style does it?', [
+    'slow|Slow jazz.',
+    'mystery|Something dark and atmospheric.',
+    'play|A guilty-pleasure song we both love.',
+    'closeness|Our song.',
+  ], 'Make a playlist together.'),
+  mcq('l5-bold-request', 'deep', 5, 'desires', 'How would you prefer your partner ask you for something new?', [
+    'words|Directly, in a calm moment.',
+    'play|Playfully, so it is easy to say no.',
+    'mystery|In writing, so I can think.',
+    'talk|As part of a longer conversation.',
+  ], 'And how would you ask?'),
+  mcq('l5-heat-of-moment', 'emotional', 5, 'bold', 'What makes a moment feel truly spontaneous to you?', [
+    'surprise|Not knowing it was coming at all.',
+    'lead|My partner acting on impulse.',
+    'adventure|An unexpected place.',
+    'play|Breaking our usual routine.',
+  ], 'When did this last happen?'),
+  mcq('l5-reveal-self', 'deep', 5, 'desires', 'Which part of yourself would you like your partner to see more of?', [
+    'lead|My bold side.',
+    'play|My playful side.',
+    'slow|My tender side.',
+    'mystery|A side they have not met yet.',
+  ], 'How could you show it?'),
+  mcq('l5-vacation-secret', 'fantasy', 5, 'dates', 'You book a weekend away and agree on one rule nobody else knows. What is the rule?', [
+    'mystery|We arrive as strangers.',
+    'slow|No clocks, no plans.',
+    'play|Every decision by coin toss.',
+    'words|Only compliments all weekend.',
+  ], 'Would you try it?'),
+  mcq('l5-afterwards', 'emotional', 5, 'romantic', 'After an intense romantic evening, what do you crave most?', [
+    'touch|Holding each other.',
+    'talk|Talking about it.',
+    'play|Food and laughter.',
+    'space|A little quiet to myself, then closeness.',
+  ], 'Does your partner know?'),
+  mcq('l5-truth-dare', 'forbidden', 5, 'playful', 'In a private game of truth or dare, which would you choose more often?', [
+    'words|Truth, always.',
+    'adventure|Dare, always.',
+    'play|Whichever makes my partner nervous.',
+    'safety|Truth, with a pass card ready.',
+  ], 'Every pass is allowed. Which would you want to ask?'),
+  mcq('l5-rule-break', 'forbidden', 5, 'bold', 'Which of your own "rules" about romance would you be curious to break, together?', [
+    'plan|Always planning ahead.',
+    'space|Never being spontaneous in public.',
+    'words|Never saying what I want.',
+    'slow|Always keeping it the same.',
+  ], 'Curiosity is not a commitment. Talk about it if you like.'),
+  mcq('l5-preference-reveal', 'deep', 5, 'desires', 'Which kind of affection would you secretly like more of?', [
+    'slow|Long and lingering.',
+    'surprise|Sudden and unexpected.',
+    'play|Playful and teasing.',
+    'lead|Confident and decisive.',
+  ], 'You can explain, or leave it as a clue.'),
+  mcq('l5-our-ritual', 'deep', 5, 'romantic', 'Which private ritual would you love to start together?', [
+    'slow|A monthly night with no phones and no plans.',
+    'words|Writing each other one note a week.',
+    'mystery|Taking turns planning a secret evening.',
+    'play|A game night with our own rules.',
+  ], 'Start it.'),
+  mcq('l5-mind-reading', 'emotional', 5, 'desires', 'What do you wish your partner could read in your mind without you saying it?', [
+    'touch|When I want to be held.',
+    'mystery|When I am thinking about them.',
+    'words|When I need to hear something kind.',
+    'space|When I need a moment.',
+  ], 'Say it now, and they will not have to guess.'),
+  mcq('l5-final-scene', 'fantasy', 5, 'romantic', 'If your love story had one final scene, how would it look?', [
+    'slow|Old and grey, still holding hands.',
+    'adventure|Somewhere far away, still exploring.',
+    'play|Still laughing at the same jokes.',
+    'closeness|At home, surrounded by everything we built.',
+  ], 'What would you want to have done before then?'),
+  mcq('l5-what-you-want', 'deep', 5, 'desires', 'If you could ask your partner for one thing in your private world, which would it be?', [
+    'surprise|More initiative.',
+    'slow|More time.',
+    'words|More honesty about what they want.',
+    'adventure|More adventure.',
+  ], 'Ask, if you feel ready.'),
+];
