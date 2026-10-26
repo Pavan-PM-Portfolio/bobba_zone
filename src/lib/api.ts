@@ -95,4 +95,5 @@ export const api = {
   mysteryHint: (id: string) => call<{ ok: boolean; error?: string }>('mystery_hint', { p_session_id: id }),
   mysteryAnswer: (id: string, optionId: string) =>
     call<{ ok: boolean; correct: boolean; solved: boolean }>('mystery_answer', { p_session_id: id, p_option_id: optionId }),
+  afterDarkTerms: (id: string) => call<import('../games/after-dark/content/taxonomy').Terms>('after_dark_terms', { p_session_id: id }),
 };

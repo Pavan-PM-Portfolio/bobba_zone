@@ -14,6 +14,7 @@ A private app of ten real-time games for two partners, each played on your own p
 | 8 | Romance Quest | Challenge journey filtered by budget and time |
 | 9 | The Couple's Mystery | Private clue cards (server-held), shared board, validated answers |
 | 10 | Story Roulette for Two | Turn-based choices, typeset story |
+| 11 | After Dark (18+) | Eight private modes: Truth or Dare, Pick One, Secret Desires, Heat Ladder, Dare Roulette, Who Knows Whom Better, Fantasy Date Builder, Wildcards |
 
 - **Frontend:** React 19 + TypeScript (strict) + Vite + Tailwind CSS v4 + Lucide icons
 - **Backend:** Supabase - Postgres, email/password Auth (admin-created accounts), Realtime private channels, RLS
@@ -26,9 +27,13 @@ Live site: `https://pavan-pm-portfolio.github.io/bobba_zone/`
 
 ## How it works
 
+### After Dark boundaries
+
+Each player's adult confirmation, consent, intensity, categories and content type are stored as their own `priv:setup` entry. `after_dark_terms()` returns only the lower intensity, the intersection of categories and a compatible content type, never either player's raw choices. Every mode filters content through those agreed terms, and either player can lower intensity, change categories, skip or end at any time.
+
 ### Session engine (games 2-10)
 
-Games 2-10 share one server layer. Each player's answers are *entries* whose key prefix sets who can see them: `pub:` both immediately, `seal:` only after both players have answered, `gated:` only after both answered **and** both consented (`ok:`). Sealed entries are immutable. Shared progress (current step, turns, quest status) is a JSON state updated with compare-and-set, so simultaneous "Next" presses move the game once. Mystery clues, answers and endings live only in the database and are served per player.
+Games 2-10 share one server layer. Each player's answers are *entries* whose key prefix sets who can see them: `pub:` both immediately, `seal:` only after both players have answered, `gated:` only after both answered **and** both consented (`ok:`), `priv:` never (author only, editable, not even shown as "partner answered"). Sealed entries are immutable. Shared progress (current step, turns, quest status) is a JSON state updated with compare-and-set, so simultaneous "Next" presses move the game once. Mystery clues, answers and endings live only in the database and are served per player.
 
 
 | Concern | Where it lives |
@@ -52,6 +57,7 @@ supabase/migrations/
   20261027000600_sessions.sql               generic sessions for games 2-10: sealed/gated entries, shared state, moments, mystery RPCs
   20261027000700_mystery_cases.sql          two original mysteries (clues split between players)
   20261027000800_room_notes.sql             explanations after a reveal (game 1)
+  20261027000900_after_dark.sql             After Dark: priv: entries (author-only, forever), agreed-terms intersection
   20261027000500_require_signed_in_accounts.sql  RPCs refuse anonymous sessions
 src/
   lib/        supabase client, typed API layer, auth provider, errors, pure game logic
@@ -111,7 +117,7 @@ Questions are rows in `public.questions` (`slug` is the stable id, `category`, `
 npm install
 cp .env.example .env.local     # fill in URL + publishable key
 npm run dev                     # http://localhost:5173
-npm test                        # 77 tests: database security + unit
+npm test                        # 92 tests: database security + unit
 npm run build                   # typecheck + production build
 ```
 
@@ -183,7 +189,7 @@ Use two devices, or two browser profiles.
 
 ## 6. Deployment checklist
 
-- [ ] Migrations 100-800 applied (`supabase db push`) - `select count(*) from public.questions` returns 60
+- [ ] Migrations 100-900 applied (`supabase db push`) - `select count(*) from public.questions` returns 60
 - [ ] Email login on, public sign-up off, anonymous off
 - [ ] Player accounts created (Auto Confirm)
 - [ ] Site URL / redirect URLs set

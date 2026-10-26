@@ -10,6 +10,7 @@ import { buttonClass } from './components/ui/Button';
 const Login = lazy(() => import('./pages/Login'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const NewGame = lazy(() => import('./pages/NewGame'));
+const AfterDarkHome = lazy(() => import('./pages/AfterDarkHome'));
 const Play = lazy(() => import('./pages/Play'));
 const CreateGame = lazy(() => import('./pages/CreateGame'));
 const JoinGame = lazy(() => import('./pages/JoinGame'));
@@ -67,6 +68,7 @@ const router = createHashRouter([
   { path: '/', element: <Authed><Dashboard /></Authed> },
   { path: '/new/:game', element: <Authed><NewGame /></Authed> },
   { path: '/play/:sessionId', element: <Authed><Play /></Authed> },
+  { path: '/after-dark', element: <Authed><AfterDarkHome /></Authed> },
   { path: '/login', element: <Authed><SignedInRedirect /></Authed> },
   { path: '/create', element: <Authed><CreateGame /></Authed> },
   { path: '/join', element: <Authed><JoinGame /></Authed> },

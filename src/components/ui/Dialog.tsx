@@ -7,7 +7,9 @@ export function Dialog({
   title,
   children,
   actions,
+  wide,
 }: {
+  wide?: boolean;
   open: boolean;
   onClose: () => void;
   title: string;
@@ -28,7 +30,7 @@ export function Dialog({
       onClose={onClose}
       onClick={(e) => e.target === ref.current && onClose()}
       aria-labelledby="dialog-title"
-      className="m-auto w-[calc(100%-2rem)] max-w-[26rem] rounded-[12px] bg-white p-0 text-ink shadow-float backdrop:bg-ink/35"
+      className={`m-auto max-h-[90dvh] w-[calc(100%-2rem)] overflow-y-auto rounded-[12px] bg-white p-0 text-ink shadow-float backdrop:bg-ink/35 ${wide ? 'max-w-[40rem]' : 'max-w-[26rem]'}`}
     >
       <div className="p-6">
         <h2 id="dialog-title" className="text-lg font-semibold tracking-[-0.015em]">

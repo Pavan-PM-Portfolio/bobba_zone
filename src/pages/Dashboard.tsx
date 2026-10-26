@@ -6,7 +6,7 @@ import { Button, buttonClass } from '../components/ui/Button';
 import { Dialog } from '../components/ui/Dialog';
 import { FullPageLoader } from '../components/ui/Spinner';
 import { useToast } from '../components/ui/Toast';
-import { GAMES, GameGlyph, gameById, type GameDef } from '../games/registry';
+import { GAMES, GameGlyph, gameById, gameHref, type GameDef } from '../games/registry';
 import { api } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import { toAppError, type AppError } from '../lib/errors';
@@ -159,14 +159,14 @@ export default function Dashboard() {
         <div className="flex items-end justify-between">
           <div>
             <h2 id="games-title" className="text-[1.05rem] font-semibold">Play a game together</h2>
-            <p className="mt-0.5 text-sm text-ink-mute">Ten games, each played on your own phones at the same time.</p>
+            <p className="mt-0.5 text-sm text-ink-mute">Each game is played on your own phones at the same time.</p>
           </div>
         </div>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {GAMES.map((g) => (
             <li key={g.id}>
               <Link
-                to={g.id === 'likely' ? '/create' : `/new/${g.id}`}
+                to={gameHref(g.id)}
                 className="group flex h-full flex-col rounded-[10px] bg-white p-5 shadow-hairline transition-shadow hover:shadow-lift focus-visible:shadow-lift"
               >
                 <div className="flex items-start justify-between">

@@ -2,6 +2,7 @@ import {
   BookHeart,
   Compass,
   Feather,
+  Flame,
   Handshake,
   Map,
   MessageCircleQuestion,
@@ -128,7 +129,20 @@ export const GAMES: GameDef[] = [
     icon: Feather,
     tint: { bg: '#F3E1EA', fg: '#7A2F55' },
   },
+  {
+    id: 'after_dark',
+    title: 'After Dark',
+    tagline: 'Private, 18+, at your own pace.',
+    description: 'Truth or dare, secret desires, a heat ladder and more. Only what you both agree to is ever shown.',
+    format: 'Simultaneous',
+    duration: '20-90 min',
+    icon: Flame,
+    tint: { bg: '#F6DCE5', fg: '#8E2B52' },
+  },
 ];
+
+/** Where a game card leads. */
+export const gameHref = (id: string) => (id === 'likely' ? '/create' : id === 'after_dark' ? '/after-dark' : `/new/${id}`);
 
 export const gameById = (id: string): GameDef | undefined => GAMES.find((g) => g.id === id);
 

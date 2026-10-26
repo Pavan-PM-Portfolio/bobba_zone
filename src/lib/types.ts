@@ -119,7 +119,8 @@ export type GameId =
   | 'conflict'
   | 'quest'
   | 'mystery'
-  | 'story';
+  | 'story'
+  | 'after_dark';
 
 export type SessionGame = Exclude<GameId, 'likely'>;
 export type SessionStatus = 'waiting' | 'in_progress' | 'completed' | 'cancelled' | 'expired';
@@ -162,6 +163,7 @@ export interface DashboardSession {
   updated_at: string;
   completed_at: string | null;
   invite_code: string;
+  mode: string | null;
   my_seat: PlayerNumber;
   players: { player_number: PlayerNumber; display_name: string }[] | null;
 }

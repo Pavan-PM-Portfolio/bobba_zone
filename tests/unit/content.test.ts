@@ -13,8 +13,8 @@ import { seededShuffle } from '../../src/lib/random';
 const unique = (xs: string[]) => new Set(xs).size === xs.length;
 
 describe('game catalogue', () => {
-  it('has ten distinct games', () => {
-    expect(GAMES).toHaveLength(10);
+  it('has eleven distinct games', () => {
+    expect(GAMES).toHaveLength(11);
     expect(unique(GAMES.map((g) => g.id))).toBe(true);
   });
 });
