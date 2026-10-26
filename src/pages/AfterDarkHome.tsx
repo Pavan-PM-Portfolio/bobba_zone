@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, ChevronLeft, Flame, ListChecks, LockKeyhole, Star, Trash2 } from 'lucide-react';
+import { Check, ChevronLeft, Disc3, Flame, Gem, Layers, LibraryBig, Vault as VaultIcon, ListChecks, LockKeyhole, Star, Trash2 } from 'lucide-react';
 import { Shell } from '../components/ui/Shell';
 import { Button } from '../components/ui/Button';
 import { Dialog } from '../components/ui/Dialog';
@@ -9,6 +9,7 @@ import { useToast } from '../components/ui/Toast';
 import { MODES, modeById, type ModeId } from '../games/after-dark/modes';
 import { CATEGORIES, LEVELS, type Category } from '../games/after-dark/content/taxonomy';
 import { DECKS, type Deck } from '../games/after-dark/content/mcq/types';
+import { VELVET_CATS } from '../games/after-dark/content/velvet/types';
 import { loadDefaults, saveDefaults, type Defaults } from '../games/after-dark/prefs';
 import { api } from '../lib/api';
 import { useAuth } from '../lib/auth';
@@ -138,7 +139,56 @@ export default function AfterDarkHome() {
         </div>
       </section>
 
-      <section className="mt-10 rounded-[14px] bg-white p-6 shadow-lift sm:p-7" aria-labelledby="qgame">
+      <section className="mt-10 overflow-hidden rounded-[16px] bg-white shadow-lift" aria-labelledby="velvet">
+        <div className="bg-[linear-gradient(135deg,#fff0f4_0%,#fffbfc_60%)] px-6 pt-7 pb-6 sm:px-8">
+          <p className="flex items-center gap-2 text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+            <Gem className="size-3.5" aria-hidden="true" /> Velvet · Body &amp; Desire
+          </p>
+          <h2 id="velvet" className="reading mt-2 text-[2rem] leading-tight font-semibold tracking-[-0.02em]">Tap, choose, reveal together.</h2>
+          <p className="mt-2 max-w-[36rem] leading-relaxed text-ink-soft">
+            Over 300 sensual, prewritten questions: your body map, what turns you on, fantasies, kinks and secret curiosities. Nothing to type. Private picks stay private.
+          </p>
+        </div>
+        <div className="grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
+          {(
+            [
+              { id: 'categories', icon: Layers, title: 'Play by category', detail: 'A mix from every category you both chose.' },
+              { id: 'roulette', icon: Disc3, title: 'Desire Roulette', detail: 'Spin the wheel. It decides the category.' },
+              { id: 'vault', icon: VaultIcon, title: 'The Velvet Vault', detail: 'Five stages. You both opt in to each.' },
+              { id: 'atlas', icon: LibraryBig, title: 'Kink & Fetish Atlas', detail: 'Search 50 cards and answer any you like.' },
+            ] as const
+          ).map((o) => (
+            <button
+              key={o.id}
+              type="button"
+              disabled={starting !== null}
+              onClick={() => start('velvet', { style: o.id, rounds: 15, perStage: 6 }, `velvet:${o.id}`)}
+              className="group flex flex-col bg-white p-5 text-left transition-colors hover:bg-paper disabled:opacity-60"
+            >
+              <o.icon className="size-5 text-accent" strokeWidth={1.8} aria-hidden="true" />
+              <span className="mt-3 font-semibold">{o.title}</span>
+              <span className="mt-1 flex-1 text-sm text-ink-soft">{o.detail}</span>
+              <span className="mt-3 text-sm font-semibold text-accent group-hover:text-accent-deep">{starting === `velvet:${o.id}` ? 'Starting...' : 'Start'}</span>
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-2 border-t border-line px-6 py-4 sm:px-8">
+          <span className="mr-1 text-sm text-ink-mute">Or play one category:</span>
+          {VELVET_CATS.filter((c) => c.id !== 'vault').map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              disabled={starting !== null}
+              onClick={() => start('velvet', { style: 'categories', only: c.id, rounds: 12 }, `velvet-only:${c.id}`)}
+              className="rounded-[6px] bg-mist px-2.5 py-1.5 text-xs font-medium text-ink-soft hover:bg-shell hover:text-accent-deep disabled:opacity-60"
+            >
+              {starting === `velvet-only:${c.id}` ? 'Starting...' : c.title}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-6 rounded-[14px] bg-white p-6 shadow-lift sm:p-7" aria-labelledby="qgame">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-[30rem]">
             <span className="grid size-10 place-items-center rounded-[8px] bg-shell text-accent-deep" aria-hidden="true">
@@ -264,7 +314,7 @@ export default function AfterDarkHome() {
       <section className="mt-10" aria-labelledby="modes">
         <h2 id="modes" className="text-[1.05rem] font-semibold">More ways to play</h2>
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {MODES.filter((m) => m.id !== 'mcq' && m.id !== 'desire').map((m) => (
+          {MODES.filter((m) => !['mcq', 'desire', 'velvet'].includes(m.id)).map((m) => (
             <li key={m.id}>
               <button
                 type="button"

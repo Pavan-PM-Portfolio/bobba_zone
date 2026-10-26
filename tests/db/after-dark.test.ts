@@ -124,3 +124,17 @@ describe('Desire Mode: disclosure choices', () => {
     expect(JSON.stringify(await view(b, id))).not.toContain('turnons');
   });
 });
+
+describe('VELVET: Atlas reveal permissions', () => {
+  it('Atlas card answers keep their privacy rules', async () => {
+    const { a, b, id } = await pair();
+    const k = 'a-ka-silk-ties';
+    await submit(a, id, `seal:x${k}`, { id: 'v-ka-silk-ties', picks: ['discuss'] });
+    await submit(a, id, `pub:xs${k}`, { id: 'v-ka-silk-ties', picks: ['discuss'] });
+    await submit(a, id, `pub:xd${k}`, { share: 'now' });
+    await submit(b, id, `priv:x${k}`, { id: 'v-ka-silk-ties', picks: ['yes'], tag: 'b-private' });
+    await submit(b, id, `pub:xd${k}`, { share: 'private' });
+    expect(JSON.stringify(await view(a, id))).not.toContain('b-private');
+    expect(JSON.stringify(await view(b, id))).toContain('"discuss"');
+  });
+});

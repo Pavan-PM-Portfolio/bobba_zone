@@ -10,6 +10,7 @@ import { contentCap, levelTitle, type Terms } from './content/taxonomy';
 import { modeById, type ModeId } from './modes';
 import { SetupForm, SetupPhase } from './Setup';
 import { DesireSetupForm, DesireTermsSummary } from './DesireSetup';
+import { VelvetSetupForm, VelvetTermsSummary } from './VelvetSetup';
 import { useTerms } from './shared';
 
 export interface ModeProps extends GameProps {
@@ -19,6 +20,7 @@ export interface ModeProps extends GameProps {
 const MODE_COMPONENTS: Record<ModeId, ComponentType<ModeProps>> = {
   mcq: lazy(() => import('./modes/QuestionGame')),
   desire: lazy(() => import('./modes/DesireGame')),
+  velvet: lazy(() => import('./modes/VelvetGame')),
   truth_dare: lazy(() => import('./modes/TruthOrDare')),
   pick_one: lazy(() => import('./modes/PickOne')),
   desires: lazy(() => import('./modes/SecretDesires')),
@@ -38,7 +40,8 @@ export default function AfterDark({ view, s }: GameProps) {
   const [stopOpen, setStopOpen] = useState(false);
   const { busy, run } = useBusy();
   const desire = mode.id === 'desire';
-  const Form = desire ? DesireSetupForm : SetupForm;
+  const velvet = mode.id === 'velvet';
+  const Form = velvet ? VelvetSetupForm : desire ? DesireSetupForm : SetupForm;
 
   if (!completed && started && terms === null) return <FullPageLoader label="Loading your boundaries" />;
   if (!completed && (!started || !terms?.agreed)) {
@@ -48,8 +51,8 @@ export default function AfterDark({ view, s }: GameProps) {
         s={s}
         terms={terms}
         Form={Form}
-        Summary={desire ? DesireTermsSummary : undefined}
-        intro={desire ? 'Desire Mode is for two consenting adults. Each of you chooses privately which topics you are open to. Only topics you both choose are ever shown.' : undefined}
+        Summary={velvet ? VelvetTermsSummary : desire ? DesireTermsSummary : undefined}
+        intro={velvet ? 'VELVET is for two consenting adults. Each of you privately chooses the categories you are in for. Only what you both choose is ever played.' : desire ? 'Desire Mode is for two consenting adults. Each of you chooses privately which topics you are open to. Only topics you both choose are ever shown.' : undefined}
         onStart={async () => {
           await s.patch((st) => (st.phase === 'play' ? null : { phase: 'play' }));
           await reload();
@@ -67,7 +70,7 @@ export default function AfterDark({ view, s }: GameProps) {
           <div className="flex items-center gap-2.5">
             <mode.icon className="size-4.5 text-accent" aria-hidden="true" />
             <span className="font-medium">{mode.title}</span>
-            {terms.agreed && mode.id !== 'mcq' && !desire && (
+            {terms.agreed && mode.id !== 'mcq' && !desire && !velvet && (
               <span className="rounded-[4px] bg-shell px-1.5 py-0.5 text-xs font-medium text-accent-deep">
                 Level {contentCap(terms.level ?? 1)}, {levelTitle(terms.level ?? 1)}
               </span>
